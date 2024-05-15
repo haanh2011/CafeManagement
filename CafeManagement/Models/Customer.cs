@@ -8,7 +8,7 @@
         public string PhoneNumber { get; set; }    // Số điện thoại khách hàng
         public int Points { get; set; }            // Điểm tích lũy
 
-        public Customer(string name, string email, string phoneNumber, int id, int points = 0)
+        public Customer(string name, string email, string phoneNumber, int id= 0, int points = 0)
         {
             Id = id;
             Name = name;

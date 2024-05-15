@@ -1,44 +1,94 @@
 ﻿using System;
 using System.Collections.Generic;
-using CafeManagement.Data;
+using System.Linq;
+using CafeManagement.Manager;
 using CafeManagement.Models;
 
 namespace CafeManagement.Services
 {
     public class OrderService
     {
-        private readonly string _filePath;
-        private readonly List<Order> _orders;
+        private string _filePath;
+        private List<Order> _orders;
 
-        public OrderService(string filePath, List<Order> orders)
+        public OrderService(string filePath)
         {
             _filePath = filePath;
-            _orders = orders;
+            _orders = DataManager.LoadOrders(_filePath);
         }
 
-        public void AddOrder(Order order)
+        public List<Order> GetAllItems()
         {
-            _orders.Add(order);
-            DataManager.SaveOrders(_filePath, _orders);
+            return _orders;
         }
 
-        public void UpdateOrder(Order updatedOrder)
+        public void DisplayAllItems()
         {
-            for (int i = 0; i < _orders.Count; i++)
+            foreach (var order in _orders)
             {
-                if (_orders[i].Id == updatedOrder.Id)
+                Console.WriteLine($"Đơn hàng ID: {order.Id}");
+                Console.WriteLine($"Mã khách hàng: {order.CustomerId}");
+                Console.WriteLine($"Ngày đặt hàng: {order.OrderDate:yyyy-MM-dd}");
+                Console.WriteLine("Sản phẩm trong đơn hàng:");
+
+                foreach (var item in order.Items)
                 {
-                    _orders[i] = updatedOrder;
-                    break;
+                    Console.WriteLine($"- Mã sản phẩm: {item.ProductId}, Số lượng: {item.Quantity}, Giá đơn vị: {item.UnitPrice}, Tổng giá: {item.TotalPrice()}");
                 }
+                Console.WriteLine("----------------------------------------------------");
             }
+        }
+
+        public void Add(Order order)
+        {
+            // Tìm mã số lớn nhất hiện tại
+            int maxId = _orders.Count > 0 ? _orders.Max(o => o.Id) : 0;
+
+            // Gán mã số mới cho đơn hàng
+            order.Id = maxId + 1;
+
+            // Thêm đơn hàng mới vào danh sách
+            _orders.Add(order);
+
+            // Lưu danh sách đơn hàng vào file
             DataManager.SaveOrders(_filePath, _orders);
         }
 
-        public void DeleteOrder(int orderId)
+        public void Update(Order updatedOrder)
         {
-            _orders.RemoveAll(o => o.Id == orderId);
-            DataManager.SaveOrders(_filePath, _orders);
+            var order = _orders.FirstOrDefault(o => o.Id == updatedOrder.Id);
+            if (order != null)
+            {
+                order.CustomerId = updatedOrder.CustomerId;
+                order.OrderDate = updatedOrder.OrderDate;
+                order.Items = updatedOrder.Items;
+
+                DataManager.SaveOrders(_filePath, _orders);
+                Console.WriteLine("Đơn hàng đã được cập nhật.");
+            }
+            else
+            {
+                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
+            }
+        }
+
+        public void Delete(int orderId)
+        {
+            var order = _orders.FirstOrDefault(o => o.Id == orderId);
+            if (order != null)
+            {
+                _orders.Remove(order);
+                DataManager.SaveOrders(_filePath, _orders);
+                Console.WriteLine("Đơn hàng đã được xóa.");
+            }
+            else
+            {
+                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
+            }
+        }
+        public Order GetById(int orderId)
+        {
+            return _orders.FirstOrDefault(p => p.Id == orderId);
         }
     }
 }

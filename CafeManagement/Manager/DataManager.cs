@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Configuration;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CafeManagement.Models;
-namespace CafeManagement.Data
+namespace CafeManagement.Manager
 {
     public static class DataManager
     {
@@ -47,7 +46,7 @@ namespace CafeManagement.Data
                     var parts = line.Split(',');
                     if (parts.Length == 4 && int.TryParse(parts[0], out int id) &&
                         int.TryParse(parts[2], out int categoryId) &&
-                        decimal.TryParse(parts[3], out decimal price))
+                        double.TryParse(parts[3], out double price))
                     {
                         products.Add(new Product(parts[1], categoryId, price, id));
                     }
@@ -108,19 +107,21 @@ namespace CafeManagement.Data
                         int.TryParse(parts[1], out int customerId) &&
                         DateTime.TryParse(parts[2], out DateTime orderDate))
                     {
-                        var orderItems = new List<OrderItem>();
-                        var itemParts = parts[3].Split(',');
-                        foreach (var itemPart in itemParts)
+                        var items = new List<OrderItem>();
+                        var itemsParts = parts[3].Split(',');
+                        foreach (var itemPart in itemsParts)
                         {
-                            var itemSubparts = itemPart.Split(':');
-                            if (itemSubparts.Length == 3 && int.TryParse(itemSubparts[0], out int productId) &&
-                                int.TryParse(itemSubparts[1], out int quantity) &&
-                                decimal.TryParse(itemSubparts[2], out decimal unitPrice))
+                            var itemDetails = itemPart.Split(':');
+                            if (itemDetails.Length == 3 &&
+                                int.TryParse(itemDetails[0], out int productId) &&
+                                int.TryParse(itemDetails[1], out int quantity) &&
+                                double.TryParse(itemDetails[2], out double unitPrice))
                             {
-                                orderItems.Add(new OrderItem(productId, quantity, unitPrice));
+                                items.Add(new OrderItem(productId, quantity, unitPrice));
                             }
                         }
-                        orders.Add(new Order(id, customerId, orderDate, orderItems));
+
+                        orders.Add(new Order(id, customerId, orderDate, items));
                     }
                 }
             }
@@ -132,8 +133,8 @@ namespace CafeManagement.Data
             var lines = new List<string>();
             foreach (var order in orders)
             {
-                var items = string.Join(",", order.Items.Select(item => $"{item.ProductId}:{item.Quantity}:{item.UnitPrice}"));
-                lines.Add($"{order.Id}|{order.CustomerId}|{order.OrderDate.ToString("yyyy-MM-dd")}|{items}");
+                var items = string.Join(",", order.Items.Select(i => $"{i.ProductId}:{i.Quantity}:{i.UnitPrice}"));
+                lines.Add($"{order.Id}|{order.CustomerId}|{order.OrderDate:yyyy-MM-dd}|{items}");
             }
             File.WriteAllLines(filePath, lines);
         }
@@ -149,7 +150,7 @@ namespace CafeManagement.Data
                     var parts = line.Split('|');
                     if (parts.Length == 3 && int.TryParse(parts[0], out int id) &&
                         int.TryParse(parts[1], out int orderId) &&
-                        decimal.TryParse(parts[2], out decimal totalAmount) &&
+                        double.TryParse(parts[2], out double totalAmount) &&
                         DateTime.TryParse(parts[3], out DateTime date))
                     {
                         invoices.Add(new Invoice(id,  orderId, totalAmount, date));

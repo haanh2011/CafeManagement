@@ -28,16 +28,16 @@ namespace CafeManagement.Models
     {
         public int ProductId { get; set; } // Sản phẩm
         public int Quantity { get; set; }    // Số lượng
-        public decimal UnitPrice { get; set; } // Giá sản phẩm
+        public double UnitPrice { get; set; } // Giá sản phẩm
 
-        public OrderItem(int productId, int quantity, decimal unitPrice)
+        public OrderItem(int productId, int quantity, double unitPrice)
         {
             ProductId = productId;
             Quantity = quantity;
             UnitPrice = unitPrice;
         }
 
-        public decimal TotalPrice()
+        public double TotalPrice()
         {
             return Quantity * UnitPrice;
         }

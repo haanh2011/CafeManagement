@@ -6,10 +6,10 @@ namespace CafeManagement.Models
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
-        public decimal Total { get; set; }
+        public double Total { get; set; }
         public DateTime Date { get; set; }
 
-        public Invoice(int id, int orderId, decimal total, DateTime date)
+        public Invoice(int id, int orderId, double total, DateTime date)
         {
             Id = id;
             OrderId = orderId;

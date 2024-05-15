@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using CafeManagement.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CafeManagement.Manager;
 using CafeManagement.Models;
 
 namespace CafeManagement.Services
@@ -7,41 +9,82 @@ namespace CafeManagement.Services
     public class CustomerService
     {
         private readonly string _filePath;
-        private readonly List<Customer> _customers;
-        public CustomerService(string filePath, List<Customer> customers)
+        private List<Customer> _customers;
+
+        public CustomerService(string filePath)
         {
             _filePath = filePath;
-            _customers = customers;
+            _customers = DataManager.LoadCustomers(filePath); // Tải danh sách khách hàng từ tệp
         }
 
-        public void AddCustomer(Customer customer)
+        public List<Customer> GetAllItems()
         {
-            _customers.Add(customer);
-            DataManager.SaveCustomers(_filePath, _customers);
+            return _customers; // Trả về danh sách tất cả khách hàng
         }
-
-        public void UpdateCustomer(Customer updatedCustomer)
+        public void AddPoints(int points)
         {
-            for (int i = 0; i < _customers.Count; i++)
+            // Lấy danh sách khách hàng
+            var customers = GetAllItems();
+
+            // Giảm số điểm từ tổng tiền
+            foreach (var customer in customers)
             {
-                if (_customers[i].Id == updatedCustomer.Id)
-                {
-                    _customers[i] = updatedCustomer;
-                    break;
-                }
+                customer.AddPoints(points);
             }
-            DataManager.SaveCustomers(_filePath, _customers);
+
+            // Lưu danh sách khách hàng với điểm mới
+            DataManager.SaveCustomers(_filePath, customers);
         }
 
-        public void DeleteCustomer(int customerId)
+        public void Add(Customer customer)
         {
-            _customers.RemoveAll(c => c.Id == customerId);
-            DataManager.SaveCustomers(_filePath, _customers);
+            int maxId = _customers.Count > 0 ? _customers.Max(c => c.Id) : 0;
+            customer.Id = maxId + 1;
+
+            _customers.Add(customer); // Thêm khách hàng mới vào danh sách
+
+            DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
         }
 
-        public void UpdatePoints(Customer customer, int points)
+        public void Update(Customer updatedCustomer)
         {
-            customer.Points += points;
+            int index = _customers.FindIndex(c => c.Id == updatedCustomer.Id);
+            if (index != -1)
+            {
+                _customers[index] = updatedCustomer; // Cập nhật thông tin khách hàng
+
+                DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
+            }
+            else
+            {
+                throw new InvalidOperationException("Không tìm thấy khách hàng."); // Ném ngoại lệ nếu không tìm thấy khách hàng
+            }
+        }
+
+        public void Delete(int customerId)
+        {
+            Customer customerToDelete = _customers.FirstOrDefault(c => c.Id == customerId);
+            if (customerToDelete != null)
+            {
+                _customers.Remove(customerToDelete); // Xóa khách hàng
+
+                DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
+            }
+            else
+            {
+                throw new InvalidOperationException("Không tìm thấy khách hàng."); // Ném ngoại lệ nếu không tìm thấy khách hàng
+            }
+        }
+
+        public Customer GetById(int id)
+        {
+            return _customers.FirstOrDefault(c => c.Id == id); // Trả về khách hàng theo ID
+        }
+
+
+        public Customer GetByPhoneNumber(string phoneNumber)
+        {
+            return _customers.FirstOrDefault(c => c.PhoneNumber == phoneNumber.Trim()); // Trả về khách hàng theo Phone Number
         }
     }
 }

@@ -22,13 +22,13 @@ namespace CafeManagement.Helpers
             return input;
         }
 
-        public static decimal GetDecimalInput(string prompt)
+        public static double GetDoubleInput(string prompt)
         {
-            decimal input;
+            double input;
             while (true)
             {
                 Console.Write(prompt);
-                if (decimal.TryParse(Console.ReadLine(), out input))
+                if (double.TryParse(Console.ReadLine(), out input))
                 {
                     break;
                 }

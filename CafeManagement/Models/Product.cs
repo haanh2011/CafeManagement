@@ -5,9 +5,9 @@
         public int Id { get; set; }           // Mã sản phẩm
         public string Name { get; set; }      // Tên sản phẩm
         public int CategoryId { get; set; }   // Mã loại sản phẩm
-        public decimal Price { get; set; }    // Giá sản phẩm
+        public double Price { get; set; }    // Giá sản phẩm
 
-        public Product(string name, int categoryId, decimal price, int id = 0)
+        public Product(string name, int categoryId, double price, int id = 0)
         {
             Id = id;
             Name = name;

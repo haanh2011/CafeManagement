@@ -1,48 +1,76 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using CafeManagement.Data;
+using CafeManagement.Manager;
 using CafeManagement.Models;
 
 namespace CafeManagement.Services
 {
     public class ProductService
     {
-        private readonly string _filePath;
-        private readonly List<Product> _products;
-        public ProductService(string filePath, List<Product> products)
+        private List<Product> _products;
+        private string _filePath;
+
+        public ProductService(string filePath)
         {
             _filePath = filePath;
-            _products = products;
+            _products = DataManager.LoadProducts(_filePath);
+        }
+        public List<Product> GetAll()
+        {
+            return _products;
+        }
+        public void Display()
+        {
+            foreach (var product in _products)
+            {
+                Console.WriteLine($"Sản phẩm ID: {product.Id}, Tên: {product.Name}, Loại sản phẩm: {product.CategoryId}, Giá: {product.Price}");
+            }
         }
 
-        public Product GetProductById(int productId)
+        public void Add(Product product)
         {
-            return _products.FirstOrDefault(p => p.Id == productId);
-        }
-
-        public void AddProduct(Product product)
-        {
+            int maxId = _products.Count > 0 ? _products.Max(p => p.Id) : 0;
+            product.Id = maxId + 1;
             _products.Add(product);
             DataManager.SaveProducts(_filePath, _products);
         }
 
-        public void UpdateProduct(Product updatedProduct)
+        public void Update(Product updatedProduct)
         {
-            for (int i = 0; i < _products.Count; i++)
+            var product = _products.FirstOrDefault(p => p.Id == updatedProduct.Id);
+            if (product != null)
             {
-                if (_products[i].Id == updatedProduct.Id)
-                {
-                    _products[i] = updatedProduct;
-                    break;
-                }
+                product.Name = updatedProduct.Name;
+                product.CategoryId = updatedProduct.CategoryId;
+                product.Price = updatedProduct.Price;
+                DataManager.SaveProducts(_filePath, _products);
+                Console.WriteLine("Sản phẩm đã được cập nhật.");
             }
-            DataManager.SaveProducts(_filePath, _products);
+            else
+            {
+                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
+            }
         }
 
-        public void DeleteProduct(int productId)
+        public void Delete(int productId)
         {
-            _products.RemoveAll(p => p.Id == productId);
-            DataManager.SaveProducts(_filePath, _products);
+            var product = _products.FirstOrDefault(p => p.Id == productId);
+            if (product != null)
+            {
+                _products.Remove(product);
+                DataManager.SaveProducts(_filePath, _products);
+                Console.WriteLine("Sản phẩm đã được xóa.");
+            }
+            else
+            {
+                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
+            }
+        }
+
+        public Product GetById(int productId)
+        {
+            return _products.FirstOrDefault(p => p.Id == productId);
         }
     }
 }
