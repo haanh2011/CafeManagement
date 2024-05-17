@@ -8,8 +8,8 @@ namespace CafeManagement.Services
 {
     public class InvoiceService
     {
+        private List<Invoice> _invoices;
         private readonly string _filePath;
-        private readonly List<Invoice> _invoices;
 
         public InvoiceService(string filePath)
         {
@@ -56,17 +56,17 @@ namespace CafeManagement.Services
         public void Delete(int invoiceId)
         {
             // Find the invoice to delete
-            Invoice invoiceToDelete = _invoices.FirstOrDefault(i => i.Id == invoiceId);
-            if (invoiceToDelete != null)
+            Invoice invoice = _invoices.FirstOrDefault(i => i.Id == invoiceId);
+            if (invoice.Equals(default(Invoice)))
             {
-                _invoices.Remove(invoiceToDelete);
-
-                // Save the invoices to file
-                DataManager.SaveInvoices(_filePath, _invoices);
+                throw new InvalidOperationException("Không tìm thấy hoá đơn.");
             }
             else
             {
-                throw new InvalidOperationException("Không tìm thấy hoá đơn.");
+                _invoices.Remove(invoice);
+
+                // Save the invoices to file
+                DataManager.SaveInvoices(_filePath, _invoices); 
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CafeManagement.Helpers;
 using CafeManagement.Models;
 using CafeManagement.Services;
 
@@ -16,7 +17,7 @@ public class CustomerManager
     {
         while (true)
         {
-            Console.WriteLine("===== Quản Lý Khách Hàng =====");
+            ConsoleHelper.PrintTitleMenu("Quản lý khách hàng");
             Console.WriteLine("1. Hiển thị danh sách khách hàng");
             Console.WriteLine("2. Thêm khách hàng mới");
             Console.WriteLine("3. Cập nhật thông tin khách hàng");
@@ -59,44 +60,65 @@ public class CustomerManager
 
     private void Add()
     {
-        Console.WriteLine("Nhập thông tin khách hàng mới:");
+        Console.Write("Nhập thông tin khách hàng mới:");
+        string name = ConsoleHelper.GetStringInput("\tTên: ");
+        DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh: ");
+        string phoneNumber = ConsoleHelper.GetStringInput("\tSố điện thoại: ");
+        string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
-        Console.Write("Tên khách hàng: ");
-        string name = Console.ReadLine();
-
-        Console.Write("Email: ");
-        string email = Console.ReadLine();
-
-        Console.Write("Số điện thoại: ");
-        string phoneNumber = Console.ReadLine();
-
-        _customerService.Add(new Customer(name, email, phoneNumber));
+        _customerService.Add(new Customer(name, birthday, phoneNumber, email));
         Console.WriteLine("Khách hàng đã được thêm thành công.");
     }
 
     private void Update()
     {
-        Console.Write("Nhập ID của khách hàng cần cập nhật: ");
-        int customerId = int.Parse(Console.ReadLine());
+        int customerId = ConsoleHelper.GetIntInput("Nhập ID của khách hàng cần cập nhật: ");
 
-        var customerToUpdate = _customerService.GetById(customerId);
-        if (customerToUpdate != null)
+        Customer customer = _customerService.GetById(customerId);
+        if (customer.Equals(default(Customer)))
         {
-            Console.WriteLine($"Khách hàng cần cập nhật: {customerToUpdate}");
-            Console.Write("Tên khách hàng mới: ");
-            string newName = Console.ReadLine();
-            customerToUpdate.Name = newName;
+            Console.WriteLine($"Thông tin khách hàng cần cập nhật:");
+            Console.WriteLine($"\tTên: {customer.Birthday}");
+            Console.WriteLine($"\tNgày sinh: {customer.Birthday}");
+            Console.WriteLine($"\tSố diện thoại: {customer.PhoneNumber}");
+            Console.WriteLine($"\tEmail: {customer.Name}");
 
-            Console.Write("Email mới: ");
-            string newEmail = Console.ReadLine();
-            customerToUpdate.Email = newEmail;
+            while (true)
+            {
+                ConsoleHelper.PrintTitleMenu("Lựa chọn thông tin cần cập nhật: ", false);
+                Console.WriteLine("1. Tên ");
+                Console.WriteLine("2. Ngày sinh");
+                Console.WriteLine("3. Số diện thoại");
+                Console.WriteLine("4. Email");
+                Console.WriteLine("0. Quay lại");
+                Console.Write("Chọn một tùy chọn: ");
 
-            Console.Write("Số điện thoại mới: ");
-            string newPhoneNumber = Console.ReadLine();
-            customerToUpdate.PhoneNumber = newPhoneNumber;
-
-            _customerService.Update(customerToUpdate);
-            Console.WriteLine("Thông tin khách hàng đã được cập nhật.");
+                var choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        string newName = ConsoleHelper.GetStringInput("Nhập tên khách hàng mới: ");
+                        customer.Name = newName;
+                        break;
+                    case "2":
+                        DateTime birthday = ConsoleHelper.GetDateTimeInput("Nhập ngày sinh mới: ");
+                        customer.Birthday = birthday;
+                        break;
+                    case "3":
+                        string phoneNumber = ConsoleHelper.GetStringInput("Nhập số điện thoại mới: ");
+                        customer.PhoneNumber = phoneNumber;
+                        break;
+                    case "4":
+                        string email = ConsoleHelper.GetStringInput("Nhập email mới: ");
+                        customer.Email = email;
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Tùy chọn không hợp lệ. Vui lòng chọn lại.");
+                        break;
+                }
+            }
         }
         else
         {
@@ -106,9 +128,7 @@ public class CustomerManager
 
     private void Delete()
     {
-        Console.Write("Nhập ID của khách hàng cần xóa: ");
-        int customerId = int.Parse(Console.ReadLine());
-
+        int customerId = ConsoleHelper.GetIntInput("Nhập ID của khách hàng cần xóa: ");
         _customerService.Delete(customerId);
         Console.WriteLine("Khách hàng đã được xóa.");
     }

@@ -3,27 +3,28 @@ using CafeManagement.Models;
 using System.Collections.Generic;
 using CafeManagement.Services;
 using CafeManagement.Helpers;
+using Microsoft.SqlServer.Server;
 
 namespace CafeManagement.Manager
 {
     public class OrderManager
     {
-        private OrderService _orderService;
-        private ProductService _productService;
-        private CustomerService _customerService;
+        public OrderService orderService;
+        public ProductService productService;
+        public CustomerService customerService;
 
         public OrderManager()
         {
-            _orderService = new OrderService("Data/OrderData.txt");
-            _productService = new ProductService("Data/ProductData.txt");
-            _customerService = new CustomerService("Data/CustomerData.txt");
+            orderService = new OrderService("Data/OrderData.txt");
+            productService = new ProductService("Data/ProductData.txt");
+            customerService = new CustomerService("Data/CustomerData.txt");
         }
 
         public void ShowMenu()
         {
             while (true)
             {
-                Console.WriteLine("===== Quản Lý Đơn Hàng =====");
+                ConsoleHelper.PrintTitleMenu("Quản Lý Đơn Hàng");
                 Console.WriteLine("1. Hiển thị danh sách đơn hàng");
                 Console.WriteLine("2. Thêm đơn hàng");
                 Console.WriteLine("3. Cập nhật đơn hàng");
@@ -52,21 +53,60 @@ namespace CafeManagement.Manager
                         Console.WriteLine("Tùy chọn không hợp lệ. Vui lòng chọn lại.");
                         break;
                 }
+                Console.ReadLine();
             }
         }
 
-        private void DisplayOrders()
+        public void DisplayOrders()
         {
-            _orderService.DisplayAllItems();
+            List<Order> orders = orderService.GetAllItems();
+            if (orders.Count < 1)
+            {
+                Console.WriteLine("Không có đơn đặt hàng nào!");
+            }
+            foreach (var order in orders)
+            {
+                DisplayOrder(order);
+            }
         }
 
-        private void AddOrder()
+        public void DisplayOrder(Order order)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Mã đơn hàng: {order.Id}");
+            Console.WriteLine($"Mã khách hàng: {order.CustomerId}");
+            Console.WriteLine($"Ngày đặt hàng: {order.OrderDate:yyyy-MM-dd}");
+            Console.WriteLine("Sản phẩm trong đơn hàng:");
+            Console.WriteLine("| {0} | {1,-55} | {2,10} | {3,10} | {4,10} |", "STT", "Tên sản phẩm", "Số lượng", "Giá", "Thành tiền");
+
+            int i = 0;
+            foreach (var item in order.Items)
+            {
+                i++;
+                Product product = productService.GetById(item.ProductId);
+                if (!product.Equals(default(Product)))
+                    Console.WriteLine("| {0,3} | {1,-55} | {2,10} | {3,10} | {4,10} |", i, product.Name, item.Quantity, FormatHelper.FormatNumberEuropeanStyle(product.Price), FormatHelper.FormatNumberEuropeanStyle(item.TotalPrice()));
+            }
+        }
+
+        public void DisplayOrderById(int orderId)
+        {
+            Order order = orderService.GetById(orderId);
+            if (order.Equals(default(Order)))
+            {
+                Console.WriteLine("Đơn đặt hàng không tồn tại!");
+                return;
+            }
+            DisplayOrder(order);
+        }
+
+        public void AddOrder()
         {
             string customerPhoneNumber = ConsoleHelper.GetStringInput("Nhập số diện thoại khách hàng: ");
             // Tìm kiếm thông tin khách hàng dựa trên số điện thoại
-            Customer customer = _customerService.GetByPhoneNumber(customerPhoneNumber);
+            Customer customer = customerService.GetByPhoneNumber(customerPhoneNumber);
 
-            if (customer == null)
+            if (customer.Equals(default(Customer)))
             {
                 Console.WriteLine("Không tìm thấy thông tin khách hàng với số điện thoại này.");
                 Console.WriteLine("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
@@ -75,15 +115,15 @@ namespace CafeManagement.Manager
                 if (createNewCustomer.ToUpper() == "Y")
                 {
                     // Nhập thông tin mới của khách hàng
-                    Console.WriteLine("Nhập tên khách hàng:");
-                    string name = Console.ReadLine();
-                    Console.WriteLine("Nhập email khách hàng:");
-                    string email = Console.ReadLine();
+                    Console.WriteLine("Nhập thông tin khách hàng:");
+                    string name = ConsoleHelper.GetStringInput("\tTên: ");
+                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh: ");
+                    string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
                     // Tạo mới khách hàng
-                    customer = new Customer(name, email, customerPhoneNumber);
-                    _customerService.Add(customer);
-                    DataManager.SaveCustomers("Data/CustomerData.txt", _customerService.GetAllItems());
+                    customer = new Customer(name, birthday, customerPhoneNumber, email);
+                    customer.Id = customerService.Add(customer);
+                    DataManager.SaveCustomers("Data/CustomerData.txt", customerService.GetAllItems());
                     Console.WriteLine("Khách hàng mới đã được tạo thành công.");
                 }
                 else
@@ -101,29 +141,30 @@ namespace CafeManagement.Manager
                 {
                     break;
                 }
-
                 int productId = input;
-
-                Console.Write("Nhập số lượng: ");
                 int quantity = ConsoleHelper.GetIntInput("Nhập số lượng: ");
-                Console.Write("Nhập giá đơn vị: ");
-                double unitPrice = ConsoleHelper.GetDoubleInput("Nhập giá đơn vị: ");
+                Product product = productService.GetById(productId);
 
-                items.Add(new OrderItem(productId, quantity, unitPrice));
+                items.Add(new OrderItem(productId, quantity, product.Price));
             }
 
             var order = new Order(0, customer.Id, orderDate, items);
-            _orderService.Add(order);
-            DataManager.SaveOrders("Data/OrderrData.txt", _orderService.GetAllItems());
+            orderService.Add(order);
+            DataManager.SaveOrders("Data/OrderrData.txt", orderService.GetAllItems());
         }
 
-        private void UpdateOrder()
+        public void UpdateOrder()
         {
             int orderId = ConsoleHelper.GetIntInput("Nhập ID đơn hàng cần cập nhật: ");
 
-            var order = _orderService.GetById(orderId);
+            Order order = orderService.GetById(orderId);
 
-            if (order != null)
+            if (order.Equals(default(Order)))
+            {
+                Console.WriteLine("Không tìm thấy đơn hàng.");
+
+            }
+            else
             {
                 Console.WriteLine($"Thông tin đơn hàng có mã {orderId}:");
                 Console.WriteLine(order);
@@ -153,8 +194,8 @@ namespace CafeManagement.Manager
                             // Cập nhật ngày đặt hàng
                             DateTime datetime = ConsoleHelper.GetDateTimeInput("Nhập thời gian đặt hàng: ");
                             order.OrderDate = datetime;
-                            _orderService.Update(order);
-                            DataManager.SaveOrders("Data/OrderData.txt", _orderService.GetAllItems()); // Lưu thay đổi vào file
+                            orderService.Update(order);
+                            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
                             break;
                         case 3:
                             // Cập nhật thông tin khách hàng
@@ -168,13 +209,9 @@ namespace CafeManagement.Manager
                     }
                 }
             }
-            else
-            {
-                Console.WriteLine("Không tìm thấy đơn hàng.");
-            }
         }
 
-        private void UpdateOrderItems(Order order)
+        public void UpdateOrderItems(Order order)
         {
             Console.WriteLine("Danh sách sản phẩm trong đơn hàng:");
             for (int i = 0; i < order.Items.Count; i++)
@@ -246,19 +283,19 @@ namespace CafeManagement.Manager
                 }
 
                 Console.WriteLine("Sản phẩm đã được cập nhật.");
-                DataManager.SaveOrders("Data/OrderData.txt", _orderService.GetAllItems()); // Lưu thay đổi vào file
+                DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
             }
         }
 
-        private void UpdateOrderCustomer(Order order)
+        public void UpdateOrderCustomer(Order order)
         {
             Console.WriteLine("Nhập số điện thoại khách hàng:");
             string phoneNumber = Console.ReadLine();
 
             // Tìm kiếm thông tin khách hàng dựa trên số điện thoại
-            var customer = _customerService.GetByPhoneNumber(phoneNumber);
+            var customer = customerService.GetByPhoneNumber(phoneNumber);
 
-            if (customer == null)
+            if (customer.Equals(default(Customer)))
             {
                 Console.WriteLine("Không tìm thấy thông tin khách hàng với số điện thoại này.");
                 Console.WriteLine("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
@@ -267,15 +304,15 @@ namespace CafeManagement.Manager
                 if (createNewCustomer.ToUpper() == "Y")
                 {
                     // Nhập thông tin mới của khách hàng
-                    Console.WriteLine("Nhập tên khách hàng:");
-                    string name = Console.ReadLine();
-                    Console.WriteLine("Nhập email khách hàng:");
-                    string email = Console.ReadLine();
+                    Console.WriteLine("Nhập thông tin khách hàng:");
+                    string name = ConsoleHelper.GetStringInput("\tTên: ");
+                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh: ");
+                    string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
                     // Tạo mới khách hàng
-                    customer = new Customer(name, email, phoneNumber);
-                    _customerService.Add(customer);
-                    DataManager.SaveCustomers("Data/CustomerData.txt", _customerService.GetAllItems()); // Lưu thay đổi vào file
+                    customer = new Customer(name, birthday, phoneNumber, email);
+                    customerService.Add(customer);
+                    DataManager.SaveCustomers("Data/CustomerData.txt", customerService.GetAllItems()); // Lưu thay đổi vào file
                     Console.WriteLine("Khách hàng mới đã được tạo thành công.");
                 }
                 else
@@ -286,17 +323,17 @@ namespace CafeManagement.Manager
 
             // Cập nhật thông tin khách hàng cho đơn hàng
             order.CustomerId = customer.Id;
-            _orderService.Update(order);
-            DataManager.SaveOrders("Data/OrderData.txt", _orderService.GetAllItems()); // Lưu thay đổi vào file
+            orderService.Update(order);
+            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
             Console.WriteLine("Thông tin khách hàng đã được cập nhật.");
         }
 
-        private void DeleteOrder()
+        public void DeleteOrder()
         {
             Console.Write("Nhập mã đơn hàng cần xóa: ");
             int orderId = int.Parse(Console.ReadLine());
-            _orderService.Delete(orderId);
-            DataManager.SaveOrders("Data/OrderData.txt", _orderService.GetAllItems()); // Lưu thay đổi vào file
+            orderService.Delete(orderId);
+            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
         }
     }
 }

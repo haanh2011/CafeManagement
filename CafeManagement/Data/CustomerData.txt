@@ -1,3 +1,3 @@
-﻿101,Nguyễn Văn A,nguyenvana@example.com,0123456789,100
-102,Trần Thị B,tranthib@example.com,0987654321,150
-103,Phạm Văn C,phamvanc@example.com,0934567890,200
+﻿101,Nguyễn Văn A,23/11/1998,0123456789,nguyenvana@example.com,100
+102,Trần Thị B,2/1/1990,0987654321,tranthib@example.com,150
+103,Phạm Văn C,17/5/1987,0934567890,phamvanc@example.com,200

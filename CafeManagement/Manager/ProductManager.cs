@@ -17,14 +17,14 @@ namespace CafeManagement.Manager
         public ProductManager()
         {
             _productService = new ProductService("Data/ProductData.txt");
-            _categoryService = new CategoryService("Data/ProductData.txt");
+            _categoryService = new CategoryService("Data/CategoryData.txt");
         }
 
         public void ShowMenu()
         {
             while (true)
             {
-                Console.WriteLine("===== Quản Lý Sản Phẩm =====");
+                ConsoleHelper.PrintTitleMenu("Quản Lý Sản Phẩm");
                 Console.WriteLine("1. Hiển thị danh sách sản phẩm");
                 Console.WriteLine("2. Thêm sản phẩm");
                 Console.WriteLine("3. Cập nhật sản phẩm");
@@ -33,6 +33,7 @@ namespace CafeManagement.Manager
                 Console.WriteLine("0. Quay lại");
 
                 int choice = ConsoleHelper.GetIntInput("Nhập lựa chọn của bạn: ");
+                Console.WriteLine();
 
                 switch (choice)
                 {
@@ -54,28 +55,28 @@ namespace CafeManagement.Manager
                         Console.WriteLine("Lựa chọn không hợp lệ!");
                         break;
                 }
+                Console.WriteLine("Nhập phím enter để trở về menu");
+                Console.ReadLine();
+
             }
         }
 
         public void ShowAllItems()
         {
-            Console.WriteLine("===== Danh Sách Sản Phẩm =====");
+            ConsoleHelper.PrintTitleMenu("Danh Sách Sản Phẩm");
             List <Product> products = _productService.GetAll();
             foreach (var product in products)
             {
-                Console.WriteLine($"{product.Id}. {product.Name} - {product.Price}");
+                Console.WriteLine($"{product.Id}. {product.Name} - {product.Price}VNĐ");
             }
             Console.WriteLine();
         }
 
         public void Add()
         {
-            Console.WriteLine("===== Thêm Sản Phẩm Mới =====");
-            string name = ConsoleHelper.GetStringInput("Nhập tên sản phẩm: ");
-            double price = ConsoleHelper.GetDoubleInput("Nhập giá sản phẩm: ");
-
+            ConsoleHelper.PrintTitleMenu("Thêm Sản Phẩm Mới");
             Console.WriteLine("Danh sách các loại sản phẩm có sẵn:");
-            List<Category> categories = _categoryService.GetAllCategories();
+            List<Category> categories = _categoryService.GetAllItems();
             foreach (var category in categories)
             {
                 Console.WriteLine($"{category.Id}. {category.Name}");
@@ -85,20 +86,27 @@ namespace CafeManagement.Manager
             if (categoryId == 0)
             {
                 string categoryName = ConsoleHelper.GetStringInput("Nhập tên loại sản phẩm: ");
-                categoryId = _categoryService.AddCategory(categoryName);
+                categoryId = _categoryService.Add(categoryName);
             }
+            
+            string name = ConsoleHelper.GetStringInput("Nhập tên sản phẩm: ");
+            double price = ConsoleHelper.GetDoubleInput("Nhập giá sản phẩm: ");
+
             _productService.Add(new Product(name, categoryId, price));
             Console.WriteLine("Đã thêm sản phẩm thành công!");
         }
 
         public void Update()
         {
-            Console.WriteLine("===== Cập Nhật Sản Phẩm =====");
+            ConsoleHelper.PrintTitleMenu("Cập Nhật Sản Phẩm");
             ShowAllItems();
             int productId = ConsoleHelper.GetIntInput("Nhập ID sản phẩm cần cập nhật: ");
-
-            var product = _productService.GetById(productId);
-            if (product != null)
+            Product product = _productService.GetById(productId);
+            if (product.Equals(default(Product)))
+            {
+                Console.WriteLine("Không tìm thấy sản phẩm!");
+            }
+            else
             {
                 string name = ConsoleHelper.GetStringInput("Nhập tên sản phẩm mới: ");
                 double price = ConsoleHelper.GetDoubleInput("Nhập giá sản phẩm mới: ");
@@ -109,20 +117,15 @@ namespace CafeManagement.Manager
                 _productService.Update(product);
                 Console.WriteLine("Đã cập nhật sản phẩm thành công!");
             }
-            else
-            {
-                Console.WriteLine("Không tìm thấy sản phẩm!");
-            }
         }
 
         public void Delete()
         {
-            Console.WriteLine("===== Xóa Sản Phẩm =====");
+            ConsoleHelper.PrintTitleMenu("Xóa Sản Phẩm");
             ShowAllItems();
             int productId = ConsoleHelper.GetIntInput("Nhập ID sản phẩm cần xóa: ");
-
             Product product = _productService.GetById(productId);
-            if (product != null)
+            if (product.Equals(default(Product)))
             {
                 _productService.Delete(productId);
                 Console.WriteLine("Đã xóa sản phẩm thành công!");
@@ -131,6 +134,7 @@ namespace CafeManagement.Manager
             {
                 Console.WriteLine("Không tìm thấy sản phẩm!");
             }
+
         }
     }
 }

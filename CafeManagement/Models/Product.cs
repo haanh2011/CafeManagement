@@ -1,6 +1,6 @@
 ﻿namespace CafeManagement.Models
 {
-    public class Product
+    public struct Product
     {
         public int Id { get; set; }           // Mã sản phẩm
         public string Name { get; set; }      // Tên sản phẩm

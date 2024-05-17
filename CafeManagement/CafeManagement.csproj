@@ -48,8 +48,8 @@
     <Compile Include="Manager\InvoiceManager.cs" />
     <Compile Include="Manager\OrderManager.cs" />
     <Compile Include="Manager\ProductManager.cs" />
-    <Compile Include="Utils\ConsoleHelper.cs" />
-    <Compile Include="Utils\FileHelper.cs" />
+    <Compile Include="Helpers\ConsoleHelper.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Invoice.cs" />
@@ -62,6 +62,7 @@
     <Compile Include="Services\InvoiceService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\ProductService.cs" />
+    <Compile Include="Helpers\FormatHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

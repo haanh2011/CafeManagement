@@ -7,8 +7,8 @@ namespace CafeManagement.Services
 {
     public class CategoryService
     {
+        private List<Category> _categories;
         private readonly string _filePath;
-        private readonly List<Category> _categories;
 
         public CategoryService(string filePath)
         {
@@ -16,12 +16,12 @@ namespace CafeManagement.Services
             _categories = DataManager.LoadCategories(filePath);
         }
 
-        public List<Category> GetAllCategories()
+        public List<Category> GetAllItems()
         {
             return _categories;
         }
 
-        public int AddCategory(string nameCategory)
+        public int Add(string nameCategory)
         {
             Category category = new Category(nameCategory);
             // Tìm mã số lớn nhất hiện tại

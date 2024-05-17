@@ -20,7 +20,7 @@ namespace CafeManagement
 
             while (true)
             {
-                Console.WriteLine("===== Quản Lý Quán Cà Phê =====");
+                ConsoleHelper.PrintTitleMenu("Quản Lý Quán Cà Phê");
                 Console.WriteLine("1. Quản lý sản phẩm");
                 Console.WriteLine("2. Quản lý đơn hàng");
                 Console.WriteLine("3. Quản lý hóa đơn");
@@ -28,6 +28,7 @@ namespace CafeManagement
                 Console.WriteLine("0. Thoát");
 
                 int choice = ConsoleHelper.GetIntInput("Nhập lựa chọn của bạn: ");
+                Console.WriteLine();
 
                 switch (choice)
                 {

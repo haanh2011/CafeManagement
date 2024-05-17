@@ -9,7 +9,7 @@ namespace CafeManagement.Services
     public class ProductService
     {
         private List<Product> _products;
-        private string _filePath;
+        private readonly string _filePath;
 
         public ProductService(string filePath)
         {
@@ -20,6 +20,7 @@ namespace CafeManagement.Services
         {
             return _products;
         }
+
         public void Display()
         {
             foreach (var product in _products)
@@ -39,7 +40,11 @@ namespace CafeManagement.Services
         public void Update(Product updatedProduct)
         {
             var product = _products.FirstOrDefault(p => p.Id == updatedProduct.Id);
-            if (product != null)
+            if (product.Equals(default(Product)))
+            {
+                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
+            }
+            else
             {
                 product.Name = updatedProduct.Name;
                 product.CategoryId = updatedProduct.CategoryId;
@@ -47,24 +52,20 @@ namespace CafeManagement.Services
                 DataManager.SaveProducts(_filePath, _products);
                 Console.WriteLine("Sản phẩm đã được cập nhật.");
             }
-            else
-            {
-                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
-            }
         }
 
         public void Delete(int productId)
         {
             var product = _products.FirstOrDefault(p => p.Id == productId);
-            if (product != null)
+            if (product.Equals(default(Product)))
+            {
+                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
+            }
+            else
             {
                 _products.Remove(product);
                 DataManager.SaveProducts(_filePath, _products);
                 Console.WriteLine("Sản phẩm đã được xóa.");
-            }
-            else
-            {
-                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
             }
         }
 

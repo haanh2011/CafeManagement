@@ -8,8 +8,8 @@ namespace CafeManagement.Services
 {
     public class CustomerService
     {
-        private readonly string _filePath;
         private List<Customer> _customers;
+        private readonly string _filePath;
 
         public CustomerService(string filePath)
         {
@@ -36,7 +36,7 @@ namespace CafeManagement.Services
             DataManager.SaveCustomers(_filePath, customers);
         }
 
-        public void Add(Customer customer)
+        public int Add(Customer customer)
         {
             int maxId = _customers.Count > 0 ? _customers.Max(c => c.Id) : 0;
             customer.Id = maxId + 1;
@@ -44,6 +44,7 @@ namespace CafeManagement.Services
             _customers.Add(customer); // Thêm khách hàng mới vào danh sách
 
             DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
+            return customer.Id;
         }
 
         public void Update(Customer updatedCustomer)
@@ -63,16 +64,15 @@ namespace CafeManagement.Services
 
         public void Delete(int customerId)
         {
-            Customer customerToDelete = _customers.FirstOrDefault(c => c.Id == customerId);
-            if (customerToDelete != null)
+            Customer customer = _customers.FirstOrDefault(c => c.Id == customerId);
+            if (customer.Equals(default(Customer)))
             {
-                _customers.Remove(customerToDelete); // Xóa khách hàng
-
-                DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
+                throw new InvalidOperationException("Không tìm thấy khách hàng."); // Ném ngoại lệ nếu không tìm thấy khách hàng
             }
             else
             {
-                throw new InvalidOperationException("Không tìm thấy khách hàng."); // Ném ngoại lệ nếu không tìm thấy khách hàng
+                _customers.Remove(customer); // Xóa khách hàng
+                DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
             }
         }
 
@@ -80,7 +80,6 @@ namespace CafeManagement.Services
         {
             return _customers.FirstOrDefault(c => c.Id == id); // Trả về khách hàng theo ID
         }
-
 
         public Customer GetByPhoneNumber(string phoneNumber)
         {

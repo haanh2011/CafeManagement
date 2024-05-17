@@ -76,5 +76,18 @@ namespace CafeManagement.Helpers
             }
             return input;
         }
+
+        public static void PrintTitleMenu(string title, Boolean isClearConsole = true)
+        {
+            if (isClearConsole) Console.Clear();
+            Console.WriteLine("===== {0} =====", title);
+        }
+
+
+        public static void PrintInputKeyEnter(string promt)
+        {
+            Console.WriteLine("Nhập phím [enter] để {0}", promt);
+            Console.ReadLine();
+        }
     }
 }

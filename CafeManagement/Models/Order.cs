@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CafeManagement.Models
 {
-    public class Order
+    public struct Order
     {
         public int Id { get; set; }                  // Mã đơn hàng
         public int CustomerId { get; set; }        // Thông tin khách hàng
@@ -17,7 +17,15 @@ namespace CafeManagement.Models
             OrderDate = orderDate;
             Items = items;
         }
-
+        public double Total()
+        {
+            double totalPrice = 0;
+            foreach (OrderItem item in Items)
+            {
+                totalPrice += item.TotalPrice();
+            }
+            return totalPrice;
+        }
         public override string ToString()
         {
             return $"ID: {Id}, Customer ID: {CustomerId}, OrderDate: {OrderDate}, Items: {string.Join(", ", Items)}";

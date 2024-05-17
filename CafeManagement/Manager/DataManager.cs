@@ -76,8 +76,9 @@ namespace CafeManagement.Manager
                     var parts = line.Split(',');
                     if (parts.Length == 5 && int.TryParse(parts[0], out int id))
                     {
-                        var points = int.TryParse(parts[4], out int pointVal) ? pointVal : 0;
-                        customers.Add(new Customer(parts[1], parts[2], parts[3], id, points));
+                        int points = int.TryParse(parts[4], out int pointVal) ? pointVal : 0;
+                        DateTime birthday = DateTime.TryParse(parts[2], out DateTime birth) ? birth : DateTime.MinValue;
+                        customers.Add(new Customer(parts[1], birthday, parts[3], parts[4], id, points));
                     }
                 }
             }
@@ -150,10 +151,9 @@ namespace CafeManagement.Manager
                     var parts = line.Split('|');
                     if (parts.Length == 3 && int.TryParse(parts[0], out int id) &&
                         int.TryParse(parts[1], out int orderId) &&
-                        double.TryParse(parts[2], out double totalAmount) &&
-                        DateTime.TryParse(parts[3], out DateTime date))
+                        DateTime.TryParse(parts[2], out DateTime date))
                     {
-                        invoices.Add(new Invoice(id,  orderId, totalAmount, date));
+                        invoices.Add(new Invoice(id, orderId, date));
                     }
                 }
             }
@@ -165,7 +165,7 @@ namespace CafeManagement.Manager
             var lines = new List<string>();
             foreach (var invoice in invoices)
             {
-                lines.Add($"{invoice.Id}|{invoice.OrderId}|{invoice.Total}");
+                lines.Add($"{invoice.Id}|{invoice.OrderId}|");
             }
             File.WriteAllLines(filePath, lines);
         }
