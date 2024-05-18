@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CafeManagement.Models;
@@ -7,9 +6,9 @@ namespace CafeManagement.Manager
 {
     public static class DataManager
     {
-        public static List<Category> LoadCategories(string filePath)
+        public static LinkedList<Category> LoadCategories(string filePath)
         {
-            var categories = new List<Category>();
+            LinkedList<Category> categories = new LinkedList<Category>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
@@ -18,26 +17,26 @@ namespace CafeManagement.Manager
                     var parts = line.Split(',');
                     if (parts.Length == 2 && int.TryParse(parts[0], out int id))
                     {
-                        categories.Add(new Category(parts[1], id));
+                        categories.AddLast(new Category(parts[1], id));
                     }
                 }
             }
             return categories;
         }
 
-        public static void SaveCategories(string filePath, List<Category> categories)
+        public static void SaveCategories(string filePath,LinkedList<Category> categories)
         {
-            var lines = new List<string>();
-            foreach (var category in categories)
+            LinkedList<string> lines = new LinkedList<string>();
+            foreach (Category category in categories.ToList())
             {
-                lines.Add($"{category.Id},{category.Name}");
+                lines.AddLast($"{category.Id},{category.Name}");
             }
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines.ToList());
         }
 
-        public static List<Product> LoadProducts(string filePath)
+        public static LinkedList<Product> LoadProducts(string filePath)
         {
-            var products = new List<Product>();
+            LinkedList<Product> products = new LinkedList<Product>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
@@ -48,26 +47,26 @@ namespace CafeManagement.Manager
                         int.TryParse(parts[2], out int categoryId) &&
                         double.TryParse(parts[3], out double price))
                     {
-                        products.Add(new Product(parts[1], categoryId, price, id));
+                        products.AddLast(new Product(parts[1], categoryId, price, id));
                     }
                 }
             }
             return products;
         }
 
-        public static void SaveProducts(string filePath, List<Product> products)
+        public static void SaveProducts(string filePath, LinkedList<Product> products)
         {
-            var lines = new List<string>();
-            foreach (var product in products)
+            var lines = new LinkedList<string>();
+            foreach (var product in products.ToList())
             {
-                lines.Add($"{product.Id},{product.Name},{product.CategoryId},{product.Price}");
+                lines.AddLast($"{product.Id},{product.Name},{product.CategoryId},{product.Price}");
             }
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines.ToList());
         }
 
-        public static List<Customer> LoadCustomers(string filePath)
+        public static LinkedList<Customer> LoadCustomers(string filePath)
         {
-            var customers = new List<Customer>();
+            LinkedList<Customer> customers = new LinkedList<Customer>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
@@ -78,26 +77,26 @@ namespace CafeManagement.Manager
                     {
                         int points = int.TryParse(parts[4], out int pointVal) ? pointVal : 0;
                         DateTime birthday = DateTime.TryParse(parts[2], out DateTime birth) ? birth : DateTime.MinValue;
-                        customers.Add(new Customer(parts[1], birthday, parts[3], parts[4], id, points));
+                        customers.AddLast(new Customer(parts[1], birthday, parts[3], parts[4], id, points));
                     }
                 }
             }
             return customers;
         }
 
-        public static void SaveCustomers(string filePath, List<Customer> customers)
+        public static void SaveCustomers(string filePath, LinkedList<Customer> customers)
         {
-            var lines = new List<string>();
-            foreach (var customer in customers)
+            var lines = new LinkedList<string>();
+            foreach (Customer customer in customers.ToList())
             {
-                lines.Add($"{customer.Id},{customer.Name},{customer.Email},{customer.PhoneNumber},{customer.Points}");
+                lines.AddLast($"{customer.Id},{customer.Name},{customer.Email},{customer.PhoneNumber},{customer.Points}");
             }
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines.ToList());
         }
 
-        public static List<Order> LoadOrders(string filePath)
+        public static LinkedList<Order> LoadOrders(string filePath)
         {
-            var orders = new List<Order>();
+            LinkedList<Order> orders = new LinkedList<Order>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
@@ -108,7 +107,7 @@ namespace CafeManagement.Manager
                         int.TryParse(parts[1], out int customerId) &&
                         DateTime.TryParse(parts[2], out DateTime orderDate))
                     {
-                        var items = new List<OrderItem>();
+                        LinkedList<OrderItem> items = new LinkedList<OrderItem>();
                         var itemsParts = parts[3].Split(',');
                         foreach (var itemPart in itemsParts)
                         {
@@ -118,31 +117,31 @@ namespace CafeManagement.Manager
                                 int.TryParse(itemDetails[1], out int quantity) &&
                                 double.TryParse(itemDetails[2], out double unitPrice))
                             {
-                                items.Add(new OrderItem(productId, quantity, unitPrice));
+                                items.AddLast(new OrderItem(productId, quantity, unitPrice));
                             }
                         }
 
-                        orders.Add(new Order(id, customerId, orderDate, items));
+                        orders.AddLast(new Order(id, customerId, orderDate, items));
                     }
                 }
             }
             return orders;
         }
 
-        public static void SaveOrders(string filePath, List<Order> orders)
+        public static void SaveOrders(string filePath, LinkedList<Order> orders)
         {
-            var lines = new List<string>();
-            foreach (var order in orders)
+            LinkedList<string> lines = new LinkedList<string>();
+            foreach (Order order in orders.ToList())
             {
-                var items = string.Join(",", order.Items.Select(i => $"{i.ProductId}:{i.Quantity}:{i.UnitPrice}"));
-                lines.Add($"{order.Id}|{order.CustomerId}|{order.OrderDate:yyyy-MM-dd}|{items}");
+                var items = string.Join(",", order.Items.ToList().Select(i => $"{i.ProductId}:{i.Quantity}:{i.UnitPrice}"));
+                lines.AddLast($"{order.Id}|{order.CustomerId}|{order.OrderDate:yyyy-MM-dd}|{items}");
             }
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines.ToList());
         }
 
-        public static List<Invoice> LoadInvoices(string filePath)
+        public static LinkedList<Invoice> LoadInvoices(string filePath)
         {
-            var invoices = new List<Invoice>();
+            LinkedList<Invoice> invoices = new LinkedList<Invoice>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
@@ -153,21 +152,21 @@ namespace CafeManagement.Manager
                         int.TryParse(parts[1], out int orderId) &&
                         DateTime.TryParse(parts[2], out DateTime date))
                     {
-                        invoices.Add(new Invoice(id, orderId, date));
+                        invoices.AddLast(new Invoice(id, orderId, date));
                     }
                 }
             }
             return invoices;
         }
 
-        public static void SaveInvoices(string filePath, List<Invoice> invoices)
+        public static void SaveInvoices(string filePath, LinkedList<Invoice> invoices)
         {
-            var lines = new List<string>();
-            foreach (var invoice in invoices)
+            LinkedList<string> lines = new LinkedList<string>();
+            foreach (Invoice invoice in invoices.ToList())
             {
-                lines.Add($"{invoice.Id}|{invoice.OrderId}|");
+                lines.AddLast($"{invoice.Id}|{invoice.OrderId}|");
             }
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines.ToList());
         }
     }
 }

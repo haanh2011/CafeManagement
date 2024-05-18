@@ -1,6 +1,6 @@
 ﻿namespace CafeManagement.Models
 {
-    public struct Category
+    public class Category
     {
         public int Id { get; set; }           // Mã loại sản phẩm
         public string Name { get; set; }      // Tên loại sản phẩm
@@ -13,7 +13,7 @@
 
         public override string ToString()
         {
-            return $"ID: {Id}, Name: {Name}";
+            return $"ID: {Id}, Tên: {Name}";
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace CafeManagement.Models
 {
-    public struct Customer
+    public class Customer
     {
         public int Id { get; set; }                // Mã khách hàng
         public string Name { get; set; }           // Tên khách hàng
@@ -28,7 +28,7 @@ namespace CafeManagement.Models
 
         public override string ToString()
         {
-            return $"ID: {Id}, Name: {Name}, Birthday: {Birthday}, Email: {Email}, PhoneNumber: {PhoneNumber}, Points: {Points}";
+            return $"ID: {Id}, Tên: {Name}, Ngày sinh: {Birthday}, Email: {Email}, SĐT: {PhoneNumber}, Điểm tích luỹ: {Points}";
         }
     }
 }

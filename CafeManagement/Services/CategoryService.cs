@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using CafeManagement.Manager;
 using CafeManagement.Models;
 
@@ -7,55 +6,67 @@ namespace CafeManagement.Services
 {
     public class CategoryService
     {
-        private List<Category> _categories;
+        private LinkedList<Category> _categories;
         private readonly string _filePath;
 
         public CategoryService(string filePath)
         {
             _filePath = filePath;
-            _categories = DataManager.LoadCategories(filePath);
+            _categories = DataManager.LoadCategories(_filePath);
         }
-
-        public List<Category> GetAllItems()
+        public LinkedList<Category> GetAllItems()
         {
             return _categories;
         }
 
-        public int Add(string nameCategory)
+        public Category Find(Func<Category, bool> predicate)
         {
-            Category category = new Category(nameCategory);
-            // Tìm mã số lớn nhất hiện tại
-            int maxId = _categories.Count > 0 ? _categories.Max(c => c.Id) : 0;
-            // Gán mã số mới cho category
-            category.Id = maxId + 1;
-            _categories.Add(category);
-            DataManager.SaveCategories(_filePath, _categories);
-            return category.Id;
-        }
-
-        public void AddCategory(Category category)
-        {
-            _categories.Add(category);
-            DataManager.SaveCategories(_filePath, _categories);
-        }
-
-        public void UpdateCategory(Category updatedCategory)
-        {
-            for (int i = 0; i < _categories.Count; i++)
+            Node<Category> category = _categories.Find(predicate);
+            if (category != null)
             {
-                if (_categories[i].Id == updatedCategory.Id)
-                {
-                    _categories[i] = updatedCategory;
-                    break;
-                }
+                return category.Data;
             }
-            DataManager.SaveCategories(_filePath, _categories);
+            return null;
         }
 
-        public void DeleteCategory(int categoryId)
+        public Category Add(Category category)
         {
-            _categories.RemoveAll(c => c.Id == categoryId);
-            DataManager.SaveCategories(_filePath, _categories);
+            Category categoryMax = _categories.Max(p => p.Id);
+            int maxId = _categories.Count > 0 ? categoryMax.Id : 0;
+            category.Id = maxId + 1;
+            _categories.AddLast(category);
+            DataManager.LoadCategories(_filePath);
+            return category;
+        }
+
+        public void Update(Category updatedCategory)
+        {
+            Category category = Find(p => p.Id == updatedCategory.Id);
+            if (category != null)
+            {
+                category.Name = updatedCategory.Name;
+                DataManager.LoadCategories(_filePath);
+            }
+        }
+
+        public void Delete(int categoryId)
+        {
+            Node<Category> category = _categories.Find(i => i.Id == categoryId);
+            if (category != null)
+            {
+                _categories.RemoveNode(category);
+                DataManager.LoadCategories(_filePath);
+                Console.WriteLine("Sản phẩm đã được xóa.");
+            }
+            else
+            {
+                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
+            }
+        }
+
+        public Category GetById(int categoryId)
+        {
+            return _categories.Find(p => p.Id == categoryId)?.Data;
         }
     }
 }

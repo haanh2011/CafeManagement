@@ -43,16 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Manager\CustomerManager.cs" />
-    <Compile Include="Manager\DataManager.cs" />
-    <Compile Include="Manager\InvoiceManager.cs" />
-    <Compile Include="Manager\OrderManager.cs" />
-    <Compile Include="Manager\ProductManager.cs" />
+    <Compile Include="Constants\StringConstants.cs" />
+    <Compile Include="Managers\CategoryManager.cs" />
+    <Compile Include="Managers\CustomerManager.cs" />
+    <Compile Include="Managers\DataManager.cs" />
+    <Compile Include="Managers\InvoiceManager.cs" />
+    <Compile Include="Managers\OrderManager.cs" />
+    <Compile Include="Managers\ProductManager.cs" />
     <Compile Include="Helpers\ConsoleHelper.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\LinkedList.cs" />
+    <Compile Include="Models\Node.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Program.cs" />

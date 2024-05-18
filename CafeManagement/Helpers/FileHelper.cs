@@ -5,9 +5,9 @@ namespace CafeManagement.Helpers
 {
     public static class FileHelper
     {
-        public static List<string> ReadFromFile(string filePath)
+        public static Models.LinkedList<string> ReadFromFile(string filePath)
         {
-            List<string> lines = new List<string>();
+            Models.LinkedList<string> lines = new Models.LinkedList<string>();
             if (File.Exists(filePath))
             {
                 lines.AddRange(File.ReadAllLines(filePath));
@@ -15,9 +15,9 @@ namespace CafeManagement.Helpers
             return lines;
         }
 
-        public static void WriteToFile(string filePath, List<string> lines)
+        public static void WriteToFile(string filePath, Models.LinkedList<string> lines)
         {
-            File.WriteAllLines(filePath, lines);
+            File.WriteAllLines(filePath, lines.ToList());
         }
     }
 }

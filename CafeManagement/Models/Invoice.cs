@@ -2,7 +2,7 @@
 
 namespace CafeManagement.Models
 {
-    public struct Invoice
+    public class Invoice
     {
         public int Id { get; set; }
         public int OrderId { get; set; }

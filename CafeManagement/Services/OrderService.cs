@@ -8,7 +8,7 @@ namespace CafeManagement.Services
 {
     public class OrderService
     {
-        private List<Order> _orders;
+        private Models.LinkedList<Order> _orders;
         private readonly string _filePath;
 
         public OrderService(string filePath)
@@ -17,62 +17,64 @@ namespace CafeManagement.Services
             _orders = DataManager.LoadOrders(_filePath);
         }
 
-        public List<Order> GetAllItems()
+        public Models.LinkedList<Order> GetAllItems()
         {
             _orders = DataManager.LoadOrders(_filePath);
             return _orders;
         }
 
-        public void Add(Order order)
+        public Order Add(Order order)
         {
             // Tìm mã số lớn nhất hiện tại
-            int maxId = _orders.Count > 0 ? _orders.Max(o => o.Id) : 0;
+            Order orderMax = _orders.Max(o => o.Id);
+            int maxId = _orders.Count > 0 ? orderMax.Id : 0;
 
             // Gán mã số mới cho đơn hàng
             order.Id = maxId + 1;
 
             // Thêm đơn hàng mới vào danh sách
-            _orders.Add(order);
+            _orders.AddLast(order);
 
             // Lưu danh sách đơn hàng vào file
             DataManager.SaveOrders(_filePath, _orders);
+            return order;
         }
 
         public void Update(Order updatedOrder)
         {
-            var order = _orders.FirstOrDefault(o => o.Id == updatedOrder.Id);
-            if (order.Equals(default(Order)))
+            Node<Order> order = _orders.Find(p => p.Id == updatedOrder.Id);
+            if (order != null)
             {
-                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
-            }
-            else
-            {
-                order.CustomerId = updatedOrder.CustomerId;
-                order.OrderDate = updatedOrder.OrderDate;
-                order.Items = updatedOrder.Items;
+                order.Data.CustomerId = updatedOrder.CustomerId;
+                order.Data.OrderDate = updatedOrder.OrderDate;
+                order.Data.Items = updatedOrder.Items;
 
                 DataManager.SaveOrders(_filePath, _orders);
                 Console.WriteLine("Đơn hàng đã được cập nhật.");
+            }
+            else
+            {
+                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
             }
         }
 
         public void Delete(int orderId)
         {
-            var order = _orders.FirstOrDefault(o => o.Id == orderId);
-            if (order.Equals(default(Order)))
+            Node<Order> order = _orders.Find(p => p.Id == orderId);
+            if (order != null)
             {
-                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
+                _orders.RemoveNode(order);
+                DataManager.SaveOrders(_filePath, _orders);
+                Console.WriteLine("Đơn hàng đã được xóa.");
             }
             else
             {
-                _orders.Remove(order);
-                DataManager.SaveOrders(_filePath, _orders);
-                Console.WriteLine("Đơn hàng đã được xóa.");
+                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
             }
         }
         public Order GetById(int orderId)
         {
-            return _orders.FirstOrDefault(p => p.Id == orderId);
+            return _orders.Find(p => p.Id == orderId)?.Data;
         }
 
     }

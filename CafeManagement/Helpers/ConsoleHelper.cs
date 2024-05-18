@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CafeManagement.Constants;
+using System;
 
 namespace CafeManagement.Helpers
 {
@@ -88,6 +89,17 @@ namespace CafeManagement.Helpers
         {
             Console.WriteLine("Nhập phím [enter] để {0}", promt);
             Console.ReadLine();
+        }
+        public static void PrintMenuDetails(string name)
+        {
+            PrintTitleMenu(string.Format(StringConstants.MANAGE_X, name).ToUpper());
+            Console.WriteLine("1. " + FormatHelper.ToTitleCase(string.Format(StringConstants.DISPLAY_LIST_X, name)));
+            Console.WriteLine("2. " + FormatHelper.ToTitleCase(string.Format(StringConstants.ADD, name)));
+            Console.WriteLine("3. " + FormatHelper.ToTitleCase(string.Format(StringConstants.UPDATE, name)));
+            Console.WriteLine("4. " + FormatHelper.ToTitleCase(string.Format(StringConstants.DELETE, name)));
+            Console.WriteLine("0. " + StringConstants.BACK);
+            Console.Write(StringConstants.CHOOSE_AN_OPTION);
+        
         }
     }
 }
