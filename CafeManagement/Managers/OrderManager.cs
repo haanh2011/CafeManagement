@@ -25,6 +25,7 @@ namespace CafeManagement.Manager
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.ORDER);
                 var choice = Console.ReadLine();
+                Console.WriteLine();
                 switch (choice)
                 {
                     case "1":
@@ -45,6 +46,8 @@ namespace CafeManagement.Manager
                         Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
                         break;
                 }
+
+                Console.WriteLine();
                 Console.WriteLine(StringConstants.ENTER_THE_KEY_ENTER_TO_RETURN_TO_THE_MENU);
                 Console.ReadLine();
             }
@@ -53,9 +56,13 @@ namespace CafeManagement.Manager
         public void DisplayAllItems()
         {
             LinkedList<Order> orders = orderService.GetAllItems();
-            if (orders.Count < 1)
+            if (orders.Count > 0)
             {
-                Console.WriteLine("Không có đơn đặt hàng nào!");
+                ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.ORDER));
+            }
+            else
+            {
+                string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.ORDER);
             }
             foreach (Order order in orders.ToList())
             {
@@ -114,7 +121,7 @@ namespace CafeManagement.Manager
                     // Nhập thông tin mới của khách hàng
                     Console.WriteLine("Nhập thông tin khách hàng:");
                     string name = ConsoleHelper.GetStringInput("\tTên: ");
-                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh: ");
+            DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh (dd/MM/yyyy):", "dd/MM/yyyy");
                     string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
                     // Tạo mới khách hàng
@@ -165,15 +172,15 @@ namespace CafeManagement.Manager
                 while (true)
                 {
                     Console.WriteLine("Chọn thành phần cần cập nhật:");
-                    Console.WriteLine("1. Danh sách sản phẩm");
+                    Console.WriteLine("1. " + string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
                     Console.WriteLine("2. Ngày đặt hàng");
-                    Console.WriteLine("3. Khách hàng");
+                    Console.WriteLine("3. " + StringConstants.CUSTOMER);
                     Console.WriteLine(StringConstants.BACK);
 
                     int choice;
                     if (!int.TryParse(Console.ReadLine(), out choice))
                     {
-                        Console.WriteLine("Vui lòng nhập số từ menu.");
+                        Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
                         continue;
                     }
 
@@ -185,8 +192,7 @@ namespace CafeManagement.Manager
                             break;
                         case 2:
                             // Cập nhật ngày đặt hàng
-                            DateTime datetime = ConsoleHelper.GetDateTimeInput("Nhập thời gian đặt hàng: ");
-                            order.OrderDate = datetime;
+                            order.OrderDate = DateTime.Now;
                             orderService.Update(order);
                             DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
                             break;
@@ -197,14 +203,14 @@ namespace CafeManagement.Manager
                         case 0:
                             return; // Quay lại menu chính
                         default:
-                            Console.WriteLine("Lựa chọn không hợp lệ.");
+                            Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
                             break;
                     }
                 }
             }
             else
             {
-                Console.WriteLine("Không tìm thấy đơn hàng.");
+                Console.WriteLine(string.Format(StringConstants.X_NOT_FOUND, StringConstants.ORDER));
             }
         }
 
@@ -236,7 +242,7 @@ namespace CafeManagement.Manager
                 }
 
                 // Lấy thông tin sản phẩm được chọn
-                Node<OrderItem>selectedItem = order.Items.FindNodeAtIndex(choice - 1);
+                Node<OrderItem> selectedItem = order.Items.FindNodeAtIndex(choice - 1);
 
                 // Hiển thị menu cập nhật sản phẩm
                 Console.WriteLine($"Chọn thông tin cần cập nhật cho sản phẩm {selectedItem.Data.ProductId}:");
@@ -275,7 +281,7 @@ namespace CafeManagement.Manager
                         selectedItem.Data.UnitPrice = newPrice;
                         break;
                     default:
-                        Console.WriteLine("Lựa chọn không hợp lệ.");
+                        Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
                         continue;
                 }
 
@@ -303,7 +309,7 @@ namespace CafeManagement.Manager
                     // Nhập thông tin mới của khách hàng
                     Console.WriteLine("Nhập thông tin khách hàng:");
                     string name = ConsoleHelper.GetStringInput("\tTên: ");
-                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh: ");
+                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh (dd/MM/yyyy):", "dd/MM/yyyy");
                     string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
                     // Tạo mới khách hàng

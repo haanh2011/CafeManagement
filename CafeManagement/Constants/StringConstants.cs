@@ -5,6 +5,7 @@ namespace CafeManagement.Constants
 {
     public static class StringConstants
     {
+        public const string FORMAT_DATE = "dd/MM/yyyy";
         public const string TITLE_PROJECT = "QUẢN LÝ QUÁN CÀ PHÊ";
         public const string MANAGE_X = "quản lý {0}";
         public const string CATEGORY = "loại sản phẩm";
@@ -21,11 +22,14 @@ namespace CafeManagement.Constants
         public const string DELETE = "Xóa {0}";
         public const string FIND = "Tìm kiếm {0}";
         public const string ID = "mã";
-        public const string NAME = "tên";
         public const string BACK = "Quay lại";
         public const string X_HAS_BEEN_ADDED_SUCCESSFULLY = "{0} đã được thêm thành công.";
+        public const string ENTER_THE_ID_OF_X_TO_ADD = "Nhập ID của {0} mới: ";
         public const string ENTER_THE_ID_OF_X_TO_UPDATE = "Nhập ID của {0} cần cập nhật: ";
         public const string ENTER_THE_ID_OF_X_TO_DELETE = "Nhập ID của {0} cần xoá: ";
+        public const string ENTER_THE_INFORMATION_OF_X_TO_ADD = "Thông tin của {0} mới: ";
+        public const string ENTER_THE_INFORMATION_OF_X_TO_UPDATE = "Thông tin của {0} cần cập nhật: ";
+        public const string ENTER_THE_INFORMATION_OF_X_TO_DELETE = "Thông tin của {0} cần xoá: ";
         public const string ENTER_THE_KEY_ENTER_TO_RETURN_TO_THE_MENU = "Nhập phím [enter] để trở về menu";
         public const string CHOOSE_AN_OPTION = "Chọn một tùy chọn: ";
         public const string MESSAGE_INVALID_OPTION = "Tùy chọn không hợp lệ. Vui lòng chọn lại!";
@@ -33,6 +37,17 @@ namespace CafeManagement.Constants
         public const string X_WITH_THE_ENTERED_ID_WAS_NOT_FOUND = "Không tìm thấy {0} với ID đã nhập!";
         public const string X_NOT_FOUND = "Không tìm thấy {0}!";
         public const string CANNOT_DELETE_X_ASSOCIATED_Y = "Không thể xóa {0} vì nó có {1} liên quan.";
+        public const string LIST_X = "Danh sách {0}.";
+        public const string X_HAS_BEEN_REMOVE = "{0} đã được xóa";
+        public const string INPUT_X_NEW = "Nhập {0} mới";
+        public const string NAME = "tên";
+        public const string BIRTHDAY = "ngày sinh";
+        public const string PHONENUMBER = "số điện thoại";
+        public const string EMAIL = "email";
+        public const string POINT = "điểm";
+        public const string SELECT_INFORMATION_TO_UPDATE = "Lựa chọn thông tin cần cập nhật: ";
+        public const string THERE_ARE_NO_X_IN_THE_LIST = "Không có {0} nào trong danh sách";
+        public const string X_IS_EXIST_IN_LIST = "{0} đã tồn tại trong danh sách";
 
         // Thêm các chuỗi khác tại đây...
     }

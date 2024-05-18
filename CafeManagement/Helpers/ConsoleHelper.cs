@@ -41,7 +41,7 @@ namespace CafeManagement.Helpers
             return input;
         }
 
-        public static DateTime GetDateTimeInput(string prompt)
+        public static DateTime GetDateTimeInput(string prompt, string format)
         {
             DateTime input;
             while (true)
@@ -53,7 +53,7 @@ namespace CafeManagement.Helpers
                 }
                 else
                 {
-                    Console.WriteLine("Vui lòng nhập ngày tháng hợp lệ.");
+                    Console.WriteLine($"Vui lòng nhập ngày tháng hợp lệ theo định dạng {format}.");
                 }
             }
             return input;
@@ -75,7 +75,7 @@ namespace CafeManagement.Helpers
                     Console.WriteLine("Vui lòng không để trống!");
                 }
             }
-            return input;
+            return input.TrimStart().TrimEnd();
         }
 
         public static void PrintTitleMenu(string title, Boolean isClearConsole = true)
@@ -84,12 +84,6 @@ namespace CafeManagement.Helpers
             Console.WriteLine("===== {0} =====", title);
         }
 
-
-        public static void PrintInputKeyEnter(string promt)
-        {
-            Console.WriteLine("Nhập phím [enter] để {0}", promt);
-            Console.ReadLine();
-        }
         public static void PrintMenuDetails(string name)
         {
             PrintTitleMenu(string.Format(StringConstants.MANAGE_X, name).ToUpper());

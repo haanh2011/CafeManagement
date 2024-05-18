@@ -55,7 +55,7 @@ namespace CafeManagement
                         Console.ReadLine();
                         return;
                     default:
-                        Console.WriteLine("Lựa chọn không hợp lệ!");
+                        Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
                         break;
                 }
             }

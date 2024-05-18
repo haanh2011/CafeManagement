@@ -1,4 +1,7 @@
-﻿namespace CafeManagement.Models
+﻿using CafeManagement.Manager;
+using CafeManagement.Services;
+
+namespace CafeManagement.Models
 {
     public class Product
     {
@@ -17,7 +20,9 @@
 
         public override string ToString()
         {
-            return $"ID: {Id}, Name: {Name}, CategoryID: {CategoryId}, Price: {Price}";
+            LinkedList<Category> categories = DataManager.LoadCategories("Data/CategoryData.txt");
+            Category category = categories.Find(c => c.Id == CategoryId)?.Data;
+            return $"ID: {Id}, Tên: {Name}, Loại sản phẩm: {category?.Name}, Giá: {Price}";
         }
     }
 }

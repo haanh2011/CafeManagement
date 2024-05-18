@@ -30,7 +30,7 @@ namespace CafeManagement.Manager
                 switch (choice)
                 {
                     case 1:
-                        ShowAllItems();
+                        DisplayAllItems();
                         break;
                     case 2:
                         Add();
@@ -44,30 +44,37 @@ namespace CafeManagement.Manager
                     case 0:
                         return;
                     default:
-                        Console.WriteLine("Lựa chọn không hợp lệ!");
+                        Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
                         break;
                 }
+
+                Console.WriteLine();
                 Console.WriteLine(StringConstants.ENTER_THE_KEY_ENTER_TO_RETURN_TO_THE_MENU);
                 Console.ReadLine();
             }
         }
-
-        public void ShowAllItems()
+        private void DisplayAllItems()
         {
-            ConsoleHelper.PrintTitleMenu("Danh Sách Sản Phẩm");
-            Models.LinkedList<Product> products = _productService.GetAllItems();
+            LinkedList<Product> products = _productService.GetAllItems();
+            if (products.Count > 0)
+            {
+                ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
+            }
+            else
+            {
+                Console.WriteLine(string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.PRODUCT));
+            }
             foreach (Product product in products.ToList())
             {
-                Console.WriteLine($"{product.Id}. {product.Name} - {product.Price} {StringConstants.CURRENCT_UNIT}");
+                Console.WriteLine(product.ToString());
             }
-            Console.WriteLine();
         }
 
         public void Add()
         {
             ConsoleHelper.PrintTitleMenu("Thêm Sản Phẩm Mới");
             Console.WriteLine("Danh sách các loại sản phẩm có sẵn:");
-            Models.LinkedList<Category> categories = _categoryService.GetAllItems();
+            LinkedList<Category> categories = _categoryService.GetAllItems();
             foreach (Category category in categories.ToList())
             {
                 Console.WriteLine($"{category.Id}. {category.Name}");
@@ -91,7 +98,7 @@ namespace CafeManagement.Manager
         public void Update()
         {
             ConsoleHelper.PrintTitleMenu("Cập Nhật Sản Phẩm");
-            ShowAllItems();
+            DisplayAllItems();
             int productId = ConsoleHelper.GetIntInput("Nhập ID sản phẩm cần cập nhật: ");
             Product product = _productService.GetById(productId);
             if (product != null)
@@ -112,7 +119,7 @@ namespace CafeManagement.Manager
 
         public void Delete()
         {
-            ShowAllItems();
+            DisplayAllItems();
             int productId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_DELETE, StringConstants.PRODUCT));
             if (!CanDeleteProduct(productId))
             {

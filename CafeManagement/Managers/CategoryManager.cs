@@ -3,6 +3,7 @@ using CafeManagement.Helpers;
 using CafeManagement.Models;
 using CafeManagement.Services;
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.Runtime.InteropServices.WindowsRuntime;
 
@@ -24,8 +25,8 @@ namespace CafeManagement.Manager
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.CATEGORY);
-
                 var choice = Console.ReadLine();
+                Console.WriteLine();
                 switch (choice)
                 {
                     case "1":
@@ -47,6 +48,7 @@ namespace CafeManagement.Manager
                         break;
                 }
 
+                Console.WriteLine();
                 Console.WriteLine(StringConstants.ENTER_THE_KEY_ENTER_TO_RETURN_TO_THE_MENU);
                 Console.ReadLine();
             }
@@ -55,19 +57,32 @@ namespace CafeManagement.Manager
         private void DisplayAllItems()
         {
             LinkedList<Category> catogorys = _categoryService.GetAllItems();
+            if (catogorys.Count > 0)
+            {
+                ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CATEGORY));
+            }
+            else
+            {
+                Console.WriteLine(string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST,StringConstants.CATEGORY));
+            }
             foreach (Category catogory in catogorys.ToList())
             {
-                Console.WriteLine(catogory);
+                Console.WriteLine(catogory.ToString());
             }
         }
 
         public void Add()
         {
             Console.Write(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY));
-            string name = ConsoleHelper.GetStringInput("\tTên: ");
-
+            string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: ");
+            Category catogory =  _categoryService.Find(item => item.Name.ToUpper() == name.ToUpper());
+            if (catogory != null)
+            {
+                Console.WriteLine(string.Format(StringConstants.X_IS_EXIST_IN_LIST, StringConstants.CATEGORY));
+                return;
+            }
             _categoryService.Add(new Category(name));
-            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CUSTOMER));
+            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CATEGORY));
         }
 
         public void Update()
@@ -85,7 +100,7 @@ namespace CafeManagement.Manager
             }
             else
             {
-                Console.WriteLine("Không tìm thấy loại sản phẩm với ID đã nhập.");
+                Console.WriteLine(string.Format(StringConstants.X_WITH_THE_ENTERED_ID_WAS_NOT_FOUND,StringConstants.CATEGORY));
             }
         }
 
@@ -99,7 +114,7 @@ namespace CafeManagement.Manager
                 return;
             }
             _categoryService.Delete(catogoryId);
-            Console.WriteLine("Loại sản phẩm đã được xóa.");
+            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_REMOVE, StringConstants.CATEGORY));
         }
 
         public Category FindById(int categoryId)

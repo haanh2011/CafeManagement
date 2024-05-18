@@ -40,35 +40,19 @@ namespace CafeManagement.Services
         {
             // Find the index of the invoice to update
             Node<Invoice> invoice = _invoices.Find(obj => obj.Id == updatedInvoice.Id);
-            if (invoice != null)
-            {
-                invoice.Data = updatedInvoice;
+            invoice.Data = updatedInvoice;
+            // Save the invoices to file
+            DataManager.SaveInvoices(_filePath, _invoices);
 
-                // Save the invoices to file
-                DataManager.SaveInvoices(_filePath, _invoices);
-            }
-            else
-            {
-                throw new InvalidOperationException("Không tìm thấy hoá đơn.");
-            }
         }
 
         public void Delete(int invoiceId)
         {
             // Find the invoice to delete
             Node<Invoice> invoice = _invoices.Find(i => i.Id == invoiceId);
-            if (invoice != null)
-            {
-                _invoices.RemoveNode(invoice);
-                // Save the invoices to file
-                DataManager.SaveInvoices(_filePath, _invoices);
-                Console.WriteLine("Đã xoá hoá đơn thành công.");
-            }
-            else
-            {
-                Console.WriteLine(string.Format(StringConstants.X_NOT_FOUND, StringConstants.INVOICE));
-
-            }
+            _invoices.RemoveNode(invoice);
+            // Save the invoices to file
+            DataManager.SaveInvoices(_filePath, _invoices);
         }
 
         public Invoice GetById(int id)

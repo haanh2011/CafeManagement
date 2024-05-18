@@ -17,7 +17,7 @@ namespace CafeManagement.Models
 
         public override string ToString()
         {
-            return $"ID: {Id}, Order ID: {OrderId}, Date: {Date.ToShortDateString()}";
+            return $"ID: {Id}, Mã Đơn Hàng: {OrderId}, Ngày tạo hoá đơn: {Date.ToShortDateString()}";
         }
     }
 }

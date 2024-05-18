@@ -24,6 +24,7 @@ namespace CafeManagement.Manager
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.CUSTOMER);
                 var choice = Console.ReadLine();
+                Console.WriteLine();
                 switch (choice)
                 {
                     case "1":
@@ -45,6 +46,7 @@ namespace CafeManagement.Manager
                         break;
                 }
 
+                Console.WriteLine();
                 Console.WriteLine(StringConstants.ENTER_THE_KEY_ENTER_TO_RETURN_TO_THE_MENU);
                 Console.ReadLine();
             }
@@ -53,64 +55,74 @@ namespace CafeManagement.Manager
         private void DisplayAllItems()
         {
             LinkedList<Customer> customers = _customerService.GetAllItems();
+            if (customers.Count > 0)
+            {
+                ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CUSTOMER));
+            }
+            else
+            {
+                Console.WriteLine(string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.CUSTOMER));
+            }
             foreach (Customer customer in customers.ToList())
             {
-                Console.WriteLine(customer);
+                Console.WriteLine(customer.ToString());
             }
         }
 
         public void Add()
         {
-            Console.Write("Nhập thông tin khách hàng mới:");
-            string name = ConsoleHelper.GetStringInput("\tTên: ");
-            DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh: ");
-            string phoneNumber = ConsoleHelper.GetStringInput("\tSố điện thoại: ");
-            string email = ConsoleHelper.GetStringInput("\tEmail: ");
+            Console.WriteLine(string.Format(StringConstants.ENTER_THE_INFORMATION_OF_X_TO_ADD, StringConstants.CUSTOMER));
+            string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: ");
+            DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{FormatHelper.ToTitleCase(StringConstants.BIRTHDAY)}({StringConstants.FORMAT_DATE}):", StringConstants.FORMAT_DATE);
+            string phoneNumber = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.PHONENUMBER)}: ");
+            string email = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.EMAIL)}: ");
 
             _customerService.Add(new Customer(name, birthday, phoneNumber, email));
-            Console.WriteLine("Khách hàng đã được thêm thành công.");
+            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CUSTOMER));
         }
 
         public void Update()
         {
-            int customerId = ConsoleHelper.GetIntInput("Nhập ID của khách hàng cần cập nhật: ");
-
+            DisplayAllItems();
+            int customerId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_ADD, StringConstants.CUSTOMER));
             Customer customer = _customerService.GetById(customerId);
             if (customer != null)
             {
-                Console.WriteLine($"Thông tin khách hàng cần cập nhật:");
-                Console.WriteLine($"\tTên: {customer.Birthday}");
-                Console.WriteLine($"\tNgày sinh: {customer.Birthday}");
-                Console.WriteLine($"\tSố diện thoại: {customer.PhoneNumber}");
-                Console.WriteLine($"\tEmail: {customer.Name}");
+                Console.WriteLine(string.Format(StringConstants.ENTER_THE_INFORMATION_OF_X_TO_UPDATE, StringConstants.CUSTOMER));
+                Console.WriteLine($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: {customer.Name}");
+                Console.WriteLine($"\t{FormatHelper.ToTitleCase(StringConstants.BIRTHDAY)}: {customer.Birthday}");
+                Console.WriteLine($"\t{FormatHelper.ToTitleCase(StringConstants.PHONENUMBER)}: {customer.PhoneNumber}");
+                Console.WriteLine($"\t{FormatHelper.ToTitleCase(StringConstants.EMAIL)}: {customer.Email}");
 
                 while (true)
                 {
-                    ConsoleHelper.PrintTitleMenu("Lựa chọn thông tin cần cập nhật: ", false);
-                    Console.WriteLine("1. Tên ");
-                    Console.WriteLine("2. Ngày sinh");
-                    Console.WriteLine("3. Số diện thoại");
-                    Console.WriteLine("4. Email");
+                    Console.WriteLine(string.Format(StringConstants.ENTER_THE_INFORMATION_OF_X_TO_UPDATE, StringConstants.CUSTOMER));
+                    ConsoleHelper.PrintTitleMenu(StringConstants.SELECT_INFORMATION_TO_UPDATE, false);
+                    Console.WriteLine("1. " + FormatHelper.ToTitleCase(StringConstants.NAME));
+                    Console.WriteLine("2. " + FormatHelper.ToTitleCase(StringConstants.BIRTHDAY));
+                    Console.WriteLine("3. " + FormatHelper.ToTitleCase(StringConstants.PHONENUMBER));
+                    Console.WriteLine("4. " + FormatHelper.ToTitleCase(StringConstants.EMAIL));
                     Console.WriteLine(StringConstants.BACK);
                     Console.Write(StringConstants.CHOOSE_AN_OPTION);
 
                     var choice = Console.ReadLine();
+                    Console.WriteLine();
                     switch (choice)
                     {
                         case "1":
-                            string newName = ConsoleHelper.GetStringInput("Nhập tên khách hàng mới: ");
+                            string newName = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CUSTOMER));
                             customer.Name = newName;
                             break;
                         case "2":
-                            DateTime birthday = ConsoleHelper.GetDateTimeInput("Nhập ngày sinh mới: ");
+                            DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.BIRTHDAY)} ({StringConstants.FORMAT_DATE}):", StringConstants.FORMAT_DATE);
                             customer.Birthday = birthday;
                             break;
                         case "3":
-                            string phoneNumber = ConsoleHelper.GetStringInput("Nhập số điện thoại mới: ");
+                            string phoneNumber = ConsoleHelper.GetStringInput("\t" + string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.PHONENUMBER));
                             customer.PhoneNumber = phoneNumber;
                             break;
                         case "4":
-                            string email = ConsoleHelper.GetStringInput("Nhập email mới: ");
+                            string email = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.EMAIL));
                             customer.Email = email;
                             break;
                         case "0":
@@ -123,7 +135,7 @@ namespace CafeManagement.Manager
             }
             else
             {
-                Console.WriteLine("Không tìm thấy khách hàng với ID đã nhập.");
+                Console.WriteLine(string.Format(StringConstants.X_WITH_THE_ENTERED_ID_WAS_NOT_FOUND, StringConstants.CUSTOMER));
             }
         }
 
@@ -137,7 +149,7 @@ namespace CafeManagement.Manager
                 return;
             }
             _customerService.Delete(customerId);
-            Console.WriteLine("Khách hàng đã được xóa.");
+            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_REMOVE, StringConstants.CUSTOMER));
         }
 
         public bool CanDeleteCustomer(int Id)
