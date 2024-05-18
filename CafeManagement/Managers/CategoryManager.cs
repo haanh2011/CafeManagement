@@ -73,7 +73,7 @@ namespace CafeManagement.Manager
 
         public void Add()
         {
-            Console.Write(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY));
+            Console.WriteLine(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY));
             string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: ");
             Category catogory =  _categoryService.Find(item => item.Name.ToUpper() == name.ToUpper());
             if (catogory != null)
