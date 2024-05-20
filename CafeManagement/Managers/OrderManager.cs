@@ -121,7 +121,7 @@ namespace CafeManagement.Manager
                     // Nhập thông tin mới của khách hàng
                     Console.WriteLine("Nhập thông tin khách hàng:");
                     string name = ConsoleHelper.GetStringInput("\tTên: ");
-            DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh (dd/MM/yyyy):", "dd/MM/yyyy");
+                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh (dd/MM/yyyy):", "dd/MM/yyyy");
                     string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
                     // Tạo mới khách hàng
@@ -289,7 +289,10 @@ namespace CafeManagement.Manager
                 DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
             }
         }
-
+        /// <summary>
+        /// Cập nhật thông tin khách hàng cho đơn hàng.
+        /// </summary>
+        /// <param name="order">Đơn hàng cần cập nhật thông tin khách hàng.</param>
         public void UpdateCustomer(Order order)
         {
             Console.WriteLine("Nhập số điện thoại khách hàng:");
@@ -331,28 +334,46 @@ namespace CafeManagement.Manager
             Console.WriteLine("Thông tin đơn hàng đã được cập nhật.");
         }
 
+        /// <summary>
+        /// Xóa đơn hàng.
+        /// </summary>
         public void Delete()
         {
+            // Hiển thị danh sách đơn hàng
             DisplayAllItems();
+            // Nhập ID của đơn hàng cần xóa
             int orderId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_DELETE, StringConstants.ORDER));
+            // Kiểm tra xem có thể xóa đơn hàng không
             if (!CanDeleteOrder(orderId))
             {
                 Console.WriteLine(string.Format(StringConstants.CANNOT_DELETE_X_ASSOCIATED_Y, StringConstants.ORDER, StringConstants.INVOICE));
                 return;
             }
+            // Xóa đơn hàng từ dịch vụ đơn hàng
             orderService.Delete(orderId);
-            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
+            // Lưu thay đổi vào file
+            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems());
         }
 
-        public bool CanDeleteOrder(int Id)
+
+        /// <summary>
+        /// Kiểm tra xem có thể xóa đơn hàng không dựa trên ID khách hàng.
+        /// </summary>
+        /// <param name="customerId">ID của khách hàng.</param>
+        /// <returns>Trả về true nếu không có đơn hàng nào liên kết với khách hàng cung cấp, ngược lại trả về false.</returns>
+        public bool CanDeleteOrder(int customerId)
         {
+            // Lấy tất cả các đơn hàng từ dịch vụ đơn hàng
             LinkedList<Order> orders = orderService.GetAllItems();
-            Node<Order> order = orders.Find(p => p.CustomerId == Id);
+            // Kiểm tra xem có bất kỳ đơn hàng nào liên kết với ID khách hàng cung cấp không
+            Node<Order> order = orders.Find(p => p.CustomerId == customerId);
+            // Trả về true nếu không tìm thấy bất kỳ đơn hàng nào liên kết với ID khách hàng, cho biết có thể xóa
             if (orders != null)
             {
                 return false;
             }
             return true;
         }
+
     }
 }

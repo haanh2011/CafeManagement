@@ -12,6 +12,9 @@ namespace CafeManagement.Manager
         private static CategoryService _categoryService;
         private static OrderService _orderService;
 
+        /// <summary>
+        /// Khởi tạo một đối tượng mới của lớp ProductManager.
+        /// </summary>
         public ProductManager()
         {
             _productService = new ProductService("Data/ProductData.txt");
@@ -19,6 +22,9 @@ namespace CafeManagement.Manager
             _orderService = new OrderService("Data/OrderData.txt");
         }
 
+        /// <summary>
+        /// Hiển thị menu quản lý sản phẩm.
+        /// </summary>
         public void ShowMenu()
         {
             while (true)
@@ -53,6 +59,10 @@ namespace CafeManagement.Manager
                 Console.ReadLine();
             }
         }
+
+        /// <summary>
+        /// Hiển thị tất cả sản phẩm.
+        /// </summary>
         private void DisplayAllItems()
         {
             LinkedList<Product> products = _productService.GetAllItems();
@@ -69,7 +79,9 @@ namespace CafeManagement.Manager
                 Console.WriteLine(product.ToString());
             }
         }
-
+        /// <summary>
+        /// Thêm một sản phẩm mới vào hệ thống.
+        /// </summary>
         public void Add()
         {
             ConsoleHelper.PrintTitleMenu("Thêm Sản Phẩm Mới");
@@ -91,10 +103,13 @@ namespace CafeManagement.Manager
             string name = ConsoleHelper.GetStringInput("Nhập tên sản phẩm: ");
             double price = ConsoleHelper.GetDoubleInput("Nhập giá sản phẩm: ");
 
-            _productService.Add(new Product(name, categoryNew.Id, price));
+            _productService.Add(new Product(name, categoryNew?.Id ?? categoryId, price));
             Console.WriteLine("Đã thêm sản phẩm thành công!");
         }
 
+        /// <summary>
+        /// Cập nhật thông tin của một sản phẩm.
+        /// </summary>
         public void Update()
         {
             ConsoleHelper.PrintTitleMenu("Cập Nhật Sản Phẩm");
@@ -117,6 +132,9 @@ namespace CafeManagement.Manager
             }
         }
 
+        /// <summary>
+        /// Xóa một sản phẩm khỏi hệ thống.
+        /// </summary>
         public void Delete()
         {
             DisplayAllItems();
@@ -138,12 +156,22 @@ namespace CafeManagement.Manager
             }
         }
 
+        /// <summary>
+        /// Tìm kiếm sản phẩm theo ID.
+        /// </summary>
+        /// <param name="productId">ID của sản phẩm cần tìm.</param>
+        /// <returns>Trả về sản phẩm tương ứng với ID hoặc null nếu không tìm thấy.</returns>
         public Product FindById(int productId)
         {
             Product product = _productService.GetById(productId);
             return product;
         }
 
+        /// <summary>
+        /// Kiểm tra xem một sản phẩm có thể được xóa hay không.
+        /// </summary>
+        /// <param name="Id">ID của sản phẩm cần kiểm tra.</param>
+        /// <returns>Trả về true nếu có thể xóa và false nếu sản phẩm có liên kết với đơn hàng.</returns>
         public bool CanDeleteProduct(int Id)
         {
             LinkedList<Order> orders = _orderService.GetAllItems();
@@ -154,5 +182,6 @@ namespace CafeManagement.Manager
             }
             return true;
         }
+
     }
 }

@@ -4,14 +4,28 @@ using System.Linq;
 using CafeManagement.Models;
 namespace CafeManagement.Manager
 {
+    /// <summary>
+    /// Quản lý việc tải và lưu dữ liệu cho các loại đối tượng.
+    /// </summary>
     public static class DataManager
     {
+        /// <summary>
+        /// Tải danh sách các danh mục từ tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu danh mục.</param>
+        /// <returns>Danh sách các danh mục được tải.</returns>
         public static LinkedList<Category> LoadCategories(string filePath)
         {
+            // Mảng danh sách các danh mục
             LinkedList<Category> categories = new LinkedList<Category>();
+
+            // Kiểm tra nếu tệp tồn tại
             if (File.Exists(filePath))
             {
+                // Đọc tất cả các dòng từ tệp
                 var lines = File.ReadAllLines(filePath);
+
+                // Duyệt qua từng dòng để tạo các đối tượng danh mục
                 foreach (var line in lines)
                 {
                     var parts = line.Split(',');
@@ -24,16 +38,30 @@ namespace CafeManagement.Manager
             return categories;
         }
 
-        public static void SaveCategories(string filePath,LinkedList<Category> categories)
+        /// <summary>
+        /// Lưu danh sách các danh mục vào tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu danh mục.</param>
+        /// <param name="categories">Danh sách các danh mục cần lưu.</param>
+        public static void SaveCategories(string filePath, LinkedList<Category> categories)
         {
+            // Mảng danh sách các dòng để lưu vào tệp
             LinkedList<string> lines = new LinkedList<string>();
+
+            // Duyệt qua từng danh mục và tạo dòng dữ liệu tương ứng
             foreach (Category category in categories.ToList())
             {
                 lines.AddLast($"{category.Id},{category.Name}");
             }
+
+            // Ghi các dòng vào tệp
             File.WriteAllLines(filePath, lines.ToList());
         }
-
+        /// <summary>
+        /// Tải danh sách các sản phẩm từ tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu sản phẩm.</param>
+        /// <returns>Danh sách các sản phẩm được tải.</returns>
         public static LinkedList<Product> LoadProducts(string filePath)
         {
             LinkedList<Product> products = new LinkedList<Product>();
@@ -54,6 +82,11 @@ namespace CafeManagement.Manager
             return products;
         }
 
+        /// <summary>
+        /// Lưu danh sách các sản phẩm vào tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu sản phẩm.</param>
+        /// <param name="products">Danh sách các sản phẩm cần lưu.</param>
         public static void SaveProducts(string filePath, LinkedList<Product> products)
         {
             var lines = new LinkedList<string>();
@@ -64,6 +97,11 @@ namespace CafeManagement.Manager
             File.WriteAllLines(filePath, lines.ToList());
         }
 
+        /// <summary>
+        /// Tải danh sách các khách hàng từ tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu khách hàng.</param>
+        /// <returns>Danh sách các khách hàng được tải.</returns>
         public static LinkedList<Customer> LoadCustomers(string filePath)
         {
             LinkedList<Customer> customers = new LinkedList<Customer>();
@@ -84,6 +122,11 @@ namespace CafeManagement.Manager
             return customers;
         }
 
+        /// <summary>
+        /// Lưu danh sách các khách hàng vào tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu khách hàng.</param>
+        /// <param name="customers">Danh sách các khách hàng cần lưu.</param>
         public static void SaveCustomers(string filePath, LinkedList<Customer> customers)
         {
             var lines = new LinkedList<string>();
@@ -94,6 +137,11 @@ namespace CafeManagement.Manager
             File.WriteAllLines(filePath, lines.ToList());
         }
 
+        /// <summary>
+        /// Tải danh sách các đơn đặt hàng từ tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu đơn đặt hàng.</param>
+        /// <returns>Danh sách các đơn đặt hàng được tải.</returns>
         public static LinkedList<Order> LoadOrders(string filePath)
         {
             LinkedList<Order> orders = new LinkedList<Order>();
@@ -128,6 +176,11 @@ namespace CafeManagement.Manager
             return orders;
         }
 
+        /// <summary>
+        /// Lưu danh sách các đơn đặt hàng vào tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu đơn đặt hàng.</param>
+        /// <param name="orders">Danh sách các đơn đặt hàng cần lưu.</param>
         public static void SaveOrders(string filePath, LinkedList<Order> orders)
         {
             LinkedList<string> lines = new LinkedList<string>();
@@ -139,6 +192,11 @@ namespace CafeManagement.Manager
             File.WriteAllLines(filePath, lines.ToList());
         }
 
+        /// <summary>
+        /// Tải danh sách các hóa đơn từ tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu hóa đơn.</param>
+        /// <returns>Danh sách các hóa đơn được tải.</returns>
         public static LinkedList<Invoice> LoadInvoices(string filePath)
         {
             LinkedList<Invoice> invoices = new LinkedList<Invoice>();
@@ -159,6 +217,11 @@ namespace CafeManagement.Manager
             return invoices;
         }
 
+        /// <summary>
+        /// Lưu danh sách các hóa đơn vào tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu hóa đơn.</param>
+        /// <param name="invoices">Danh sách các hóa đơn cần lưu.</param>
         public static void SaveInvoices(string filePath, LinkedList<Invoice> invoices)
         {
             LinkedList<string> lines = new LinkedList<string>();
@@ -168,5 +231,6 @@ namespace CafeManagement.Manager
             }
             File.WriteAllLines(filePath, lines.ToList());
         }
+
     }
 }

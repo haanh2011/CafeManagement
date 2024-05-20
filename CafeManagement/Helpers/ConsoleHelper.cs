@@ -1,5 +1,6 @@
 ﻿using CafeManagement.Constants;
 using System;
+using System.Globalization;
 
 namespace CafeManagement.Helpers
 {
@@ -47,7 +48,8 @@ namespace CafeManagement.Helpers
             while (true)
             {
                 Console.Write(prompt);
-                if (DateTime.TryParse(Console.ReadLine(), out input))
+                string dateValue = Console.ReadLine();
+                if (DateTime.TryParseExact(dateValue, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out input))
                 {
                     break;
                 }
