@@ -3,6 +3,9 @@ using CafeManagement.Utilities;
 using CafeManagement.Models;
 using CafeManagement.Services;
 using System;
+using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace CafeManagement.Manager
 {
@@ -66,7 +69,6 @@ namespace CafeManagement.Manager
             if (categories.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CATEGORY)); // In tiêu đề danh sách danh mục sản phẩm
-                ConsoleHelper.PrintHeaderTable(StringConstants.CATEGORY);
             }
             else
             {
@@ -89,19 +91,19 @@ namespace CafeManagement.Manager
         public void Add()
         {
             // Yêu cầu nhập tên danh mục mới
-            Console.WriteLine(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY));
+            Console.WriteLine(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY)); 
             // Nhận tên danh mục từ người dùng
-            string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: ");
+            string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: "); 
             // Tìm kiếm danh mục theo tên
-            Category category = _categoryService.Find(item => item.Name.ToUpper() == name.ToUpper());
+            Category category = _categoryService.Find(item => item.Name.ToUpper() == name.ToUpper()); 
             if (category != null)
             {
                 // Thông báo nếu danh mục đã tồn tại
-                Console.WriteLine(string.Format(StringConstants.X_IS_EXIST_IN_LIST, StringConstants.CATEGORY));
+                Console.WriteLine(string.Format(StringConstants.X_IS_EXIST_IN_LIST, StringConstants.CATEGORY)); 
                 return;
             }
             // Thêm danh mục mới vào danh sách
-            _categoryService.Add(new Category(name));
+            _categoryService.Add(new Category(name)); 
             Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CATEGORY)); // Hiển thị thông báo thành công
         }
         /// <summary>
@@ -138,7 +140,7 @@ namespace CafeManagement.Manager
                 return;
             }
             _categoryService.Delete(categoryId); // Xóa danh mục
-            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_DELETE, StringConstants.CATEGORY)); // Thông báo đã xóa thành công
+            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_REMOVE, StringConstants.CATEGORY)); // Thông báo đã xóa thành công
         }
 
         /// <summary>

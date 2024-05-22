@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CafeManagement.Constants;
 using CafeManagement.Manager;
@@ -9,34 +10,21 @@ namespace CafeManagement.Services
 {
     public class OrderService
     {
-        private LinkedList<Order> _orders;
+        private Models.LinkedList<Order> _orders;
         private readonly string _filePath;
 
-        /// <summary>
-        /// Khởi tạo một đối tượng dịch vụ đơn hàng mới.
-        /// </summary>
-        /// <param name="filePath">Đường dẫn đến tệp lưu trữ đơn hàng.</param>
         public OrderService(string filePath)
         {
             _filePath = filePath;
             _orders = DataManager.LoadOrders(_filePath);
         }
 
-        /// <summary>
-        /// Lấy danh sách tất cả đơn hàng.
-        /// </summary>
-        /// <returns>Danh sách tất cả đơn hàng.</returns>
-        public LinkedList<Order> GetAllItems()
+        public Models.LinkedList<Order> GetAllItems()
         {
             _orders = DataManager.LoadOrders(_filePath);
             return _orders;
         }
 
-        /// <summary>
-        /// Thêm một đơn hàng mới.
-        /// </summary>
-        /// <param name="order">Đơn hàng cần thêm.</param>
-        /// <returns>Đơn hàng đã được thêm vào danh sách.</returns>
         public Order Add(Order order)
         {
             // Tìm mã số lớn nhất hiện tại
@@ -54,10 +42,6 @@ namespace CafeManagement.Services
             return order;
         }
 
-        /// <summary>
-        /// Cập nhật thông tin một đơn hàng.
-        /// </summary>
-        /// <param name="updatedOrder">Đơn hàng cần cập nhật thông tin.</param>
         public void Update(Order updatedOrder)
         {
             Node<Order> order = _orders.Find(p => p.Id == updatedOrder.Id);
@@ -73,10 +57,6 @@ namespace CafeManagement.Services
             }
         }
 
-        /// <summary>
-        /// Xóa một đơn hàng dựa trên ID.
-        /// </summary>
-        /// <param name="orderId">ID của đơn hàng cần xóa.</param>
         public void Delete(int orderId)
         {
             Node<Order> order = _orders.Find(p => p.Id == orderId);
@@ -91,16 +71,11 @@ namespace CafeManagement.Services
                 Console.WriteLine(string.Format(StringConstants.X_NOT_FOUND, StringConstants.ORDER));
             }
         }
-
-        /// <summary>
-        /// Lấy thông tin của một đơn hàng dựa trên ID.
-        /// </summary>
-        /// <param name="orderId">ID của đơn hàng cần lấy thông tin.</param>
-        /// <returns>Đơn hàng thỏa mãn ID hoặc null nếu không tìm thấy.</returns>
         public Order GetById(int orderId)
         {
             _orders = DataManager.LoadOrders(_filePath);
             return _orders.Find(p => p.Id == orderId)?.Data;
         }
+
     }
 }

@@ -269,6 +269,5 @@ namespace CafeManagement.Manager
             }
             File.WriteAllLines(filePath, lines.ToList());
         }
-
     }
 }

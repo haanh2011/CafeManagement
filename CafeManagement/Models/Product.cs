@@ -44,7 +44,7 @@ namespace CafeManagement.Models
         }
 
         /// <summary>
-        /// Chuyển đổi đối tượng Product thành một chuỗi để xuất trong table.
+        /// Chuyển đổi đối tượng Product thành một chuỗi.
         /// </summary>
         /// <returns>Chuỗi biểu diễn thông tin của sản phẩm.</returns>
         public override string ToString()

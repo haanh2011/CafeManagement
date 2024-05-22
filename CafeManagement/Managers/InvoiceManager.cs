@@ -84,6 +84,7 @@ public class InvoiceManager
         string answer = Console.ReadLine();
         if (answer.ToUpper() == "Y")
         {
+            // In hóa đơn
             ConsoleHelper.PrintTitleMenu("Hóa Đơn");
             Console.WriteLine($"Mã hóa đơn: {invoice.Id}");
             Console.WriteLine($"Ngày lập hoá đơn: {invoice.Date.ToString(StringConstants.FORMAT_DATETIME)}");
@@ -154,7 +155,7 @@ public class InvoiceManager
         // Thêm số điểm tính được vào điểm tích lũy của khách hàng
         _orderManager.customerService.AddPoints(pointsEarned);
 
-        // Tạo hóa đơn mới
+        // Tạo hóa đơn
         DateTime currentDate = DateTime.Now;
         Invoice invoice = new Invoice(0, orderId, currentDate);
 

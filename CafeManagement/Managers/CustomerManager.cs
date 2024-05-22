@@ -197,7 +197,5 @@ namespace CafeManagement.Manager
             }
             return true; // Trả về true nếu không có đơn hàng nào liên kết với khách hàng
         }
-
-
     }
 }
