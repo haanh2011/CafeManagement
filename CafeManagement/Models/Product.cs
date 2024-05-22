@@ -22,7 +22,7 @@ namespace CafeManagement.Models
         {
             LinkedList<Category> categories = DataManager.LoadCategories("Data/CategoryData.txt");
             Category category = categories.Find(c => c.Id == CategoryId)?.Data;
-            return $"ID: {Id}, Tên: {Name}, Loại sản phẩm: {category?.Name}, Giá: {Price}";
+            return $"|{Id,-5}|{Name,-25}|{category?.Name,-25}|{Price,-10}|";
         }
     }
 }

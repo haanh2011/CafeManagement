@@ -59,6 +59,8 @@ namespace CafeManagement.Manager
             if (products.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
+                Console.WriteLine($"|{"ID",-5}|{"Tên SP",-25}|{"Loại SP",-25}|{"Giá",-10}|");
+                Console.WriteLine(new string('-', 70));
             }
             else
             {

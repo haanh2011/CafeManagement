@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CafeManagement.Models
 {
@@ -11,7 +13,7 @@ namespace CafeManagement.Models
         public string PhoneNumber { get; set; }    // Số điện thoại khách hàng
         public int Points { get; set; }            // Điểm tích lũy
 
-        public Customer(string name, DateTime birthday, string phoneNumber, string email, int id= 0, int points = 0)
+        public Customer(string name, DateTime birthday, string phoneNumber, string email, int id = 0, int points = 0)
         {
             Id = id;
             Name = name;
@@ -26,9 +28,10 @@ namespace CafeManagement.Models
             Points += points;
         }
 
+
         public override string ToString()
         {
-            return $"ID: {Id}, Tên: {Name}, Ngày sinh: {Birthday}, Email: {Email}, SĐT: {PhoneNumber}, Điểm tích luỹ: {Points}";
+            return $"|{Id,-5}|{Name,-20}|{Birthday:dd/MM/yyyy}|{Email,-20}|{PhoneNumber,-10}|{Points,-5}|";
         }
     }
 }

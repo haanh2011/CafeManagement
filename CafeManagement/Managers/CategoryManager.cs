@@ -60,6 +60,8 @@ namespace CafeManagement.Manager
             if (catogorys.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CATEGORY));
+                Console.WriteLine($"|{"ID",-5}|{"Tên",-30}|");
+                Console.WriteLine(new string('-', 38));
             }
             else
             {

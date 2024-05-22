@@ -58,6 +58,8 @@ namespace CafeManagement.Manager
             if (customers.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CUSTOMER));
+                Console.WriteLine($"|{"ID",-5}|{"Tên",-20}|{"Ngày sinh",-10}|{"Email",-20}|{"SĐT",-10}|{"Point",-5}|");
+                    Console.WriteLine(new string('-', 77));
             }
             else
             {

@@ -13,7 +13,7 @@
 
         public override string ToString()
         {
-            return $"ID: {Id}, Tên: {Name}";
+            return $"|{Id,-5}|{Name,-30}|";
         }
     }
 }
