@@ -1,4 +1,4 @@
-﻿namespace CafeManagement.Models
+﻿namespace CafeManagement.Utilities
 {
     /// <summary>
     /// Đại diện cho một nút trong danh sách liên kết đơn.

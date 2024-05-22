@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using CafeManagement.Constants;
 using CafeManagement.Manager;
 using CafeManagement.Models;
+using CafeManagement.Utilities;
 
 namespace CafeManagement.Services
 {
@@ -61,16 +63,13 @@ namespace CafeManagement.Services
             Node<Order> order = _orders.Find(p => p.Id == updatedOrder.Id);
             if (order != null)
             {
-                order.Data.CustomerId = updatedOrder.CustomerId;
-                order.Data.OrderDate = updatedOrder.OrderDate;
-                order.Data.Items = updatedOrder.Items;
-
+                order.Data = updatedOrder;
                 DataManager.SaveOrders(_filePath, _orders);
-                Console.WriteLine("Đơn hàng đã được cập nhật.");
+                Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_UPDATE, StringConstants.ORDER));
             }
             else
             {
-                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
+                Console.WriteLine(string.Format(StringConstants.X_NOT_FOUND, StringConstants.ORDER));
             }
         }
 
@@ -85,11 +84,11 @@ namespace CafeManagement.Services
             {
                 _orders.RemoveNode(order);
                 DataManager.SaveOrders(_filePath, _orders);
-                Console.WriteLine("Đơn hàng đã được xóa.");
+                Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_DELETE, StringConstants.ORDER));
             }
             else
             {
-                Console.WriteLine("Không tìm thấy đơn hàng với mã số đó.");
+                Console.WriteLine(string.Format(StringConstants.X_NOT_FOUND, StringConstants.ORDER));
             }
         }
 
@@ -100,6 +99,7 @@ namespace CafeManagement.Services
         /// <returns>Đơn hàng thỏa mãn ID hoặc null nếu không tìm thấy.</returns>
         public Order GetById(int orderId)
         {
+            _orders = DataManager.LoadOrders(_filePath);
             return _orders.Find(p => p.Id == orderId)?.Data;
         }
     }

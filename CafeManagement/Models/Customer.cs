@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace CafeManagement.Models
 {
@@ -66,12 +67,24 @@ namespace CafeManagement.Models
         }
 
         /// <summary>
+        /// Trừ điểm tích lũy khách hàng đã sử dụng.
+        /// </summary>
+        /// <param name="points">Số điểm cần trừ trong điểm tích lũy của khách hàng.</param>
+        public void SubtractionPoints(int points)
+        {
+            if (Points > points)
+                Points -= points;
+            else
+                Points = 0;
+        }
+
+        /// <summary>
         /// Trả về một chuỗi biểu diễn của đối tượng Customer.
         /// </summary>
         /// <returns>Chuỗi biểu diễn của đối tượng Customer.</returns>
         public override string ToString()
         {
-            return $"ID: {Id}, Tên: {Name}, Ngày sinh: {Birthday}, Email: {Email}, SĐT: {PhoneNumber}, Điểm tích lũy: {Points}";
+            return $"| {Id,5} | {Name,-25} | {Birthday.ToShortDateString(),-10} | {Email,-25} | {PhoneNumber,-10} | {Points,5} |";
         }
     }
 }

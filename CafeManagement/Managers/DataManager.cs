@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using CafeManagement.Constants;
 using CafeManagement.Models;
+using CafeManagement.Utilities;
 namespace CafeManagement.Manager
 {
     /// <summary>
@@ -14,10 +18,10 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu danh mục.</param>
         /// <returns>Danh sách các danh mục được tải.</returns>
-        public static LinkedList<Category> LoadCategories(string filePath)
+        public static Utilities.LinkedList<Category> LoadCategories(string filePath)
         {
             // Mảng danh sách các danh mục
-            LinkedList<Category> categories = new LinkedList<Category>();
+            Utilities.LinkedList<Category> categories = new Utilities.LinkedList<Category>();
 
             // Kiểm tra nếu tệp tồn tại
             if (File.Exists(filePath))
@@ -43,10 +47,10 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu danh mục.</param>
         /// <param name="categories">Danh sách các danh mục cần lưu.</param>
-        public static void SaveCategories(string filePath, LinkedList<Category> categories)
+        public static void SaveCategories(string filePath, Utilities.LinkedList<Category> categories)
         {
             // Mảng danh sách các dòng để lưu vào tệp
-            LinkedList<string> lines = new LinkedList<string>();
+            Utilities.LinkedList<string> lines = new Utilities.LinkedList<string>();
 
             // Duyệt qua từng danh mục và tạo dòng dữ liệu tương ứng
             foreach (Category category in categories.ToList())
@@ -62,20 +66,22 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu sản phẩm.</param>
         /// <returns>Danh sách các sản phẩm được tải.</returns>
-        public static LinkedList<Product> LoadProducts(string filePath)
+        public static Utilities.LinkedList<Product> LoadProducts(string filePath)
         {
-            LinkedList<Product> products = new LinkedList<Product>();
+            Utilities.LinkedList<Product> products = new Utilities.LinkedList<Product>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
+                int i = 0;
                 foreach (var line in lines)
                 {
+                    i++;
                     var parts = line.Split(',');
                     if (parts.Length == 4 && int.TryParse(parts[0], out int id) &&
                         int.TryParse(parts[2], out int categoryId) &&
                         double.TryParse(parts[3], out double price))
                     {
-                        products.AddLast(new Product(parts[1], categoryId, price, id));
+                        products.AddLast(new Product(parts[1], categoryId, price, i));
                     }
                 }
             }
@@ -87,14 +93,34 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu sản phẩm.</param>
         /// <param name="products">Danh sách các sản phẩm cần lưu.</param>
-        public static void SaveProducts(string filePath, LinkedList<Product> products)
+        /// <summary>
+        /// Lưu danh sách các sản phẩm vào tệp.
+        /// </summary>
+        /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu sản phẩm.</param>
+        /// <param name="products">Danh sách các sản phẩm cần lưu.</param>
+        public static void SaveProducts(string filePath, Utilities.LinkedList<Product> products)
         {
-            var lines = new LinkedList<string>();
-            foreach (var product in products.ToList())
+            // Sắp xếp danh sách sản phẩm theo CategoryId và tên sản phẩm
+            var sortedProducts = products.ToList()
+                .OrderBy(p => p.CategoryId)
+                .ThenBy(p => p.Name)
+                .ToList();
+
+            // Cập nhật ID của sản phẩm theo thứ tự tăng dần
+            for (int i = 0; i < sortedProducts.Count; i++)
             {
-                lines.AddLast($"{product.Id},{product.Name},{product.CategoryId},{product.Price}");
+                sortedProducts[i].Id = i + 1;
             }
-            File.WriteAllLines(filePath, lines.ToList());
+
+            // Chuyển đổi danh sách sản phẩm thành danh sách chuỗi để lưu vào tệp
+            var lines = new List<string>();
+            foreach (var product in sortedProducts)
+            {
+                lines.Add($"{product.Id},{product.Name},{product.CategoryId},{product.Price}");
+            }
+
+            // Ghi các dòng vào tệp
+            File.WriteAllLines(filePath, lines);
         }
 
         /// <summary>
@@ -102,20 +128,30 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu khách hàng.</param>
         /// <returns>Danh sách các khách hàng được tải.</returns>
-        public static LinkedList<Customer> LoadCustomers(string filePath)
+        public static Utilities.LinkedList<Customer> LoadCustomers(string filePath)
         {
-            LinkedList<Customer> customers = new LinkedList<Customer>();
+            Utilities.LinkedList<Customer> customers = new Utilities.LinkedList<Customer>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
                 foreach (var line in lines)
                 {
                     var parts = line.Split(',');
-                    if (parts.Length == 5 && int.TryParse(parts[0], out int id))
+                    if (parts.Length == 6 && int.TryParse(parts[0], out int id))
                     {
-                        int points = int.TryParse(parts[4], out int pointVal) ? pointVal : 0;
-                        DateTime birthday = DateTime.TryParse(parts[2], out DateTime birth) ? birth : DateTime.MinValue;
-                        customers.AddLast(new Customer(parts[1], birthday, parts[3], parts[4], id, points));
+                        int points = int.TryParse(parts[5], out int pointVal) ? pointVal : 0;
+                        DateTime birth = DateTime.MinValue;
+                        try
+                        {
+
+                            // Chuyển đổi chuỗi đầu vào thành đối tượng DateTime
+                            birth = DateTime.ParseExact(parts[2], StringConstants.FORMAT_DATE, CultureInfo.InvariantCulture);
+                            customers.AddLast(new Customer(parts[1], birth, parts[3], parts[4], id, points));
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Định dạng ngày không hợp lệ. Vui lòng kiểm tra file 'Data/CustomerData.txt'.");
+                        }
                     }
                 }
             }
@@ -127,12 +163,12 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu khách hàng.</param>
         /// <param name="customers">Danh sách các khách hàng cần lưu.</param>
-        public static void SaveCustomers(string filePath, LinkedList<Customer> customers)
+        public static void SaveCustomers(string filePath, Utilities.LinkedList<Customer> customers)
         {
-            var lines = new LinkedList<string>();
+            var lines = new Utilities.LinkedList<string>();
             foreach (Customer customer in customers.ToList())
             {
-                lines.AddLast($"{customer.Id},{customer.Name},{customer.Email},{customer.PhoneNumber},{customer.Points}");
+                lines.AddLast($"{customer.Id},{customer.Name},{customer.Birthday.ToString(StringConstants.FORMAT_DATE)},{customer.Email},{customer.PhoneNumber},{customer.Points}");
             }
             File.WriteAllLines(filePath, lines.ToList());
         }
@@ -142,21 +178,23 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu đơn đặt hàng.</param>
         /// <returns>Danh sách các đơn đặt hàng được tải.</returns>
-        public static LinkedList<Order> LoadOrders(string filePath)
+        public static Utilities.LinkedList<Order> LoadOrders(string filePath)
         {
-            LinkedList<Order> orders = new LinkedList<Order>();
+            Utilities.LinkedList<Order> orders = new Utilities.LinkedList<Order>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
                 foreach (var line in lines)
                 {
                     var parts = line.Split('|');
-                    if (parts.Length == 4 && int.TryParse(parts[0], out int id) &&
+                    if (parts.Length == 5 && int.TryParse(parts[0], out int id) &&
                         int.TryParse(parts[1], out int customerId) &&
-                        DateTime.TryParse(parts[2], out DateTime orderDate))
+                        DateTime.TryParse(parts[2], out DateTime orderDate)
+                        && double.TryParse(parts[4], out double points))
                     {
-                        LinkedList<OrderItem> items = new LinkedList<OrderItem>();
+                        Utilities.LinkedList<OrderItem> items = new Utilities.LinkedList<OrderItem>();
                         var itemsParts = parts[3].Split(',');
+
                         foreach (var itemPart in itemsParts)
                         {
                             var itemDetails = itemPart.Split(':');
@@ -167,9 +205,9 @@ namespace CafeManagement.Manager
                             {
                                 items.AddLast(new OrderItem(productId, quantity, unitPrice));
                             }
-                        }
 
-                        orders.AddLast(new Order(id, customerId, orderDate, items));
+                        }
+                        orders.AddLast(new Order(id, customerId, orderDate, items, points));
                     }
                 }
             }
@@ -181,13 +219,13 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu đơn đặt hàng.</param>
         /// <param name="orders">Danh sách các đơn đặt hàng cần lưu.</param>
-        public static void SaveOrders(string filePath, LinkedList<Order> orders)
+        public static void SaveOrders(string filePath, Utilities.LinkedList<Order> orders)
         {
-            LinkedList<string> lines = new LinkedList<string>();
+            Utilities.LinkedList<string> lines = new Utilities.LinkedList<string>();
             foreach (Order order in orders.ToList())
             {
                 var items = string.Join(",", order.Items.ToList().Select(i => $"{i.ProductId}:{i.Quantity}:{i.UnitPrice}"));
-                lines.AddLast($"{order.Id}|{order.CustomerId}|{order.OrderDate:yyyy-MM-dd}|{items}");
+                lines.AddLast($"{order.Id}|{order.CustomerId}|{order.OrderDate:yyyy-MM-dd}|{items}|{order.Points}");
             }
             File.WriteAllLines(filePath, lines.ToList());
         }
@@ -197,9 +235,9 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp chứa dữ liệu hóa đơn.</param>
         /// <returns>Danh sách các hóa đơn được tải.</returns>
-        public static LinkedList<Invoice> LoadInvoices(string filePath)
+        public static Utilities.LinkedList<Invoice> LoadInvoices(string filePath)
         {
-            LinkedList<Invoice> invoices = new LinkedList<Invoice>();
+            Utilities.LinkedList<Invoice> invoices = new Utilities.LinkedList<Invoice>();
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
@@ -222,9 +260,9 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="filePath">Đường dẫn tới tệp để lưu dữ liệu hóa đơn.</param>
         /// <param name="invoices">Danh sách các hóa đơn cần lưu.</param>
-        public static void SaveInvoices(string filePath, LinkedList<Invoice> invoices)
+        public static void SaveInvoices(string filePath, Utilities.LinkedList<Invoice> invoices)
         {
-            LinkedList<string> lines = new LinkedList<string>();
+            Utilities.LinkedList<string> lines = new Utilities.LinkedList<string>();
             foreach (Invoice invoice in invoices.ToList())
             {
                 lines.AddLast($"{invoice.Id}|{invoice.OrderId}|");

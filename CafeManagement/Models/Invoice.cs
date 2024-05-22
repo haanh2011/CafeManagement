@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CafeManagement.Constants;
+using System;
 
 namespace CafeManagement.Models
 {
@@ -41,7 +42,7 @@ namespace CafeManagement.Models
         /// <returns>Chuỗi biểu diễn của đối tượng Invoice.</returns>
         public override string ToString()
         {
-            return $"ID: {Id}, Mã Đơn Hàng: {OrderId}, Ngày tạo hoá đơn: {Date.ToShortDateString()}";
+            return $"| {Id,5} | {OrderId,15} | {Date.ToString(StringConstants.FORMAT_DATETIME),-20} |";
         }
     }
 }

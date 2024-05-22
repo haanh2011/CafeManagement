@@ -1,4 +1,5 @@
 ﻿using CafeManagement.Manager;
+using CafeManagement.Utilities;
 
 namespace CafeManagement.Models
 {
@@ -43,7 +44,7 @@ namespace CafeManagement.Models
         }
 
         /// <summary>
-        /// Chuyển đổi đối tượng Product thành một chuỗi.
+        /// Chuyển đổi đối tượng Product thành một chuỗi để xuất trong table.
         /// </summary>
         /// <returns>Chuỗi biểu diễn thông tin của sản phẩm.</returns>
         public override string ToString()
@@ -51,7 +52,7 @@ namespace CafeManagement.Models
             // Lấy danh sách loại sản phẩm đã lưu
             LinkedList<Category> categories = DataManager.LoadCategories("Data/CategoryData.txt");
             Category category = categories.Find(c => c.Id == CategoryId)?.Data;
-            return $"ID: {Id}, Tên: {Name}, Loại sản phẩm: {category?.Name}, Giá: {Price}";
+            return $"| {Id,5} | {Name,-25} | {FormatHelper.FormatToVND(Price),15} |";
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using CafeManagement.Models;
 
-namespace CafeManagement.Helpers
+namespace CafeManagement.Utilities
 {
     public static class FileHelper
     {

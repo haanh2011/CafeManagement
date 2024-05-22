@@ -75,13 +75,13 @@
     <Compile Include="Managers\InvoiceManager.cs" />
     <Compile Include="Managers\OrderManager.cs" />
     <Compile Include="Managers\ProductManager.cs" />
-    <Compile Include="Helpers\ConsoleHelper.cs" />
-    <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Utilities\ConsoleHelper.cs" />
+    <Compile Include="Utilities\FileHelper.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Invoice.cs" />
-    <Compile Include="Models\LinkedList.cs" />
-    <Compile Include="Models\Node.cs" />
+    <Compile Include="Utilities\LinkedList.cs" />
+    <Compile Include="Utilities\Node.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Program.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Services\InvoiceService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\ProductService.cs" />
-    <Compile Include="Helpers\FormatHelper.cs" />
+    <Compile Include="Utilities\FormatHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

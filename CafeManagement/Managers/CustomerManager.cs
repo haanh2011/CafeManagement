@@ -1,6 +1,6 @@
 ﻿using System;
 using CafeManagement.Constants;
-using CafeManagement.Helpers;
+using CafeManagement.Utilities;
 using CafeManagement.Models;
 using CafeManagement.Services;
 
@@ -88,7 +88,8 @@ namespace CafeManagement.Manager
         {
             Console.WriteLine(string.Format(StringConstants.ENTER_THE_INFORMATION_OF_X_TO_ADD, StringConstants.CUSTOMER)); // Yêu cầu nhập thông tin khách hàng
             string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: "); // Nhập tên khách hàng
-            DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{FormatHelper.ToTitleCase(StringConstants.BIRTHDAY)}({StringConstants.FORMAT_DATE}):", StringConstants.FORMAT_DATE); // Nhập ngày sinh
+            DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{FormatHelper.ToTitleCase(StringConstants.BIRTHDAY)} ({StringConstants.FORMAT_DATE}):"); // Nhập ngày sinh
+
             string phoneNumber = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.PHONENUMBER)}: "); // Nhập số điện thoại
             string email = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.EMAIL)}: "); // Nhập địa chỉ email
 
@@ -144,7 +145,7 @@ namespace CafeManagement.Manager
                             customer.Name = newName; // Cập nhật tên khách hàng
                             break;
                         case "2":
-                            DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.BIRTHDAY)} ({StringConstants.FORMAT_DATE}):", StringConstants.FORMAT_DATE);
+                            DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.BIRTHDAY)} ({StringConstants.FORMAT_DATE}):");
                             customer.Birthday = birthday; // Cập nhật ngày sinh của khách hàng
                             break;
                         case "3":
@@ -178,7 +179,7 @@ namespace CafeManagement.Manager
                 return;
             }
             _customerService.Delete(customerId); // Xóa khách hàng nếu không có đơn hàng liên kết
-            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_REMOVE, StringConstants.CUSTOMER)); // Thông báo xóa thành công
+            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_DELETE, StringConstants.CUSTOMER)); // Thông báo xóa thành công
         }
 
         /// <summary>

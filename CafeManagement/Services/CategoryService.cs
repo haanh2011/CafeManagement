@@ -1,6 +1,7 @@
 ﻿using System;
 using CafeManagement.Manager;
 using CafeManagement.Models;
+using CafeManagement.Utilities;
 
 namespace CafeManagement.Services
 {
@@ -57,7 +58,7 @@ namespace CafeManagement.Services
             int maxId = _categories.Count > 0 ? categoryMax.Id : 0;
             category.Id = maxId + 1;
             _categories.AddLast(category);
-            DataManager.SaveCategories(_filePath, _categories);
+            DataManager.LoadCategories(_filePath);
             return category;
         }
 
@@ -71,7 +72,7 @@ namespace CafeManagement.Services
             if (category != null)
             {
                 category.Name = updatedCategory.Name;
-                DataManager.SaveCategories(_filePath, _categories);
+                DataManager.LoadCategories(_filePath);
             }
         }
 
@@ -85,12 +86,12 @@ namespace CafeManagement.Services
             if (category != null)
             {
                 _categories.RemoveNode(category);
-                DataManager.SaveCategories(_filePath, _categories);
-                Console.WriteLine("Danh mục sản phẩm đã được xóa.");
+                DataManager.LoadCategories(_filePath);
+                Console.WriteLine("Sản phẩm đã được xóa.");
             }
             else
             {
-                Console.WriteLine("Không tìm thấy danh mục sản phẩm với mã số đó.");
+                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
             }
         }
 

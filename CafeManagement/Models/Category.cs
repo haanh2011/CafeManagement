@@ -1,4 +1,7 @@
-﻿namespace CafeManagement.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace CafeManagement.Models
 {
     /// <summary>
     /// Định nghĩa một loại sản phẩm trong quản lý quán cà phê.
@@ -32,7 +35,12 @@
         /// <returns>Chuỗi biểu diễn của đối tượng Category.</returns>
         public override string ToString()
         {
-            return $"ID: {Id}, Tên: {Name}";
+            return $"| {Id,-5} | {Name,-25} |";
         }
+    }
+    public class CategoryGroup
+    {
+        public Category Category { get; set; }
+        public List<Product> Products { get; set; }
     }
 }

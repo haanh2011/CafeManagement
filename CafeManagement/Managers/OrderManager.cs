@@ -1,7 +1,7 @@
 ﻿using System;
 using CafeManagement.Models;
 using CafeManagement.Services;
-using CafeManagement.Helpers;
+using CafeManagement.Utilities;
 using CafeManagement.Constants;
 
 namespace CafeManagement.Manager
@@ -75,9 +75,9 @@ namespace CafeManagement.Manager
             Console.WriteLine();
             Console.WriteLine($"Mã đơn hàng: {order.Id}");
             Console.WriteLine($"Mã khách hàng: {order.CustomerId}");
-            Console.WriteLine($"Ngày đặt hàng: {order.OrderDate:yyyy-MM-dd}");
+            Console.WriteLine($"Ngày đặt hàng: {order.OrderDate.ToString(StringConstants.FORMAT_DATETIME)}");
             Console.WriteLine("Sản phẩm trong đơn hàng:");
-            Console.WriteLine("| {0} | {1,-55} | {2,10} | {3,10} | {4,10} |", "STT", "Tên sản phẩm", "Số lượng", "Giá", "Thành tiền");
+            ConsoleHelper.PrintHeaderTable(StringConstants.ORDER);
 
             int i = 0;
             foreach (var item in order.Items.ToList())
@@ -86,9 +86,12 @@ namespace CafeManagement.Manager
                 Product product = productService.GetById(item.ProductId);
                 if (product != null)
                 {
-                    Console.WriteLine("| {0,3} | {1,-55} | {2,10} | {3,10} | {4,10} |", i, product.Name, item.Quantity, FormatHelper.FormatNumberEuropeanStyle(product.Price), FormatHelper.FormatNumberEuropeanStyle(item.TotalPrice()));
+                    Console.WriteLine($"| {i,5} {product.ToString()} {item.Quantity,10} | {FormatHelper.FormatToVND(item.TotalPrice()),15} |");
                 }
             }
+            ConsoleHelper.PrintHorizontalLineOfTable(94);
+
+            Console.WriteLine($"Tổng tiền : {FormatHelper.FormatToVND(order.Total())}");
         }
 
         public void DisplayOrderById(int orderId)
@@ -121,13 +124,12 @@ namespace CafeManagement.Manager
                     // Nhập thông tin mới của khách hàng
                     Console.WriteLine("Nhập thông tin khách hàng:");
                     string name = ConsoleHelper.GetStringInput("\tTên: ");
-                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh (dd/MM/yyyy):", "dd/MM/yyyy");
+                    DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{StringConstants.BIRTHDAY} ({StringConstants.FORMAT_DATE}):");
                     string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
                     // Tạo mới khách hàng
                     customer = new Customer(name, birthday, customerPhoneNumber, email);
                     customer = customerService.Add(customer);
-                    DataManager.SaveCustomers("Data/CustomerData.txt", customerService.GetAllItems());
                     Console.WriteLine("Khách hàng mới đã được tạo thành công.");
                 }
                 else
@@ -155,7 +157,22 @@ namespace CafeManagement.Manager
 
             Order order = new Order(0, customer.Id, orderDate, items);
             orderService.Add(order);
-            DataManager.SaveOrders("Data/OrderrData.txt", orderService.GetAllItems());
+            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems());
+            if (customer.Points > 0)
+            {
+                string keySubtractionPoints = ConsoleHelper.GetStringInput("Bạn có muốn sử dụng điểm tích luỹ để giảm giá tiền cho đơn hàng này không? (Y/N) ");
+                if (keySubtractionPoints.ToUpper() == "Y")
+                {
+                    // Nhập thông tin mới của khách hàng
+                    Console.WriteLine($"\tLưu ý bạn chỉ có {customer.Points} điểm!");
+                    Console.WriteLine("\tNếu bạn nhập quá số điểm này chúng tôi sẽ cấn trừ theo giá tiền của đơn hàng đến khi hết điểm");
+                    int points = ConsoleHelper.GetIntInput($"\tNhập số điểm bạn muốn cấn trừ (tối đa {customer.Points} điểm): ");
+                    customer.SubtractionPoints(points);
+                    customerService.Update(customer);
+                    order.Points = customer.Points > points? points: customer.Points;
+                    orderService.Update(order);
+                }
+            }
         }
 
         public void UpdateOrder()
@@ -312,7 +329,7 @@ namespace CafeManagement.Manager
                     // Nhập thông tin mới của khách hàng
                     Console.WriteLine("Nhập thông tin khách hàng:");
                     string name = ConsoleHelper.GetStringInput("\tTên: ");
-                    DateTime birthday = ConsoleHelper.GetDateTimeInput("\tNgày sinh (dd/MM/yyyy):", "dd/MM/yyyy");
+                    DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{StringConstants.BIRTHDAY} ({StringConstants.FORMAT_DATE}):");
                     string email = ConsoleHelper.GetStringInput("\tEmail: ");
 
                     // Tạo mới khách hàng
@@ -374,6 +391,5 @@ namespace CafeManagement.Manager
             }
             return true;
         }
-
     }
 }

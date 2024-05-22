@@ -1,6 +1,6 @@
 ﻿using System;
 using CafeManagement.Constants;
-using CafeManagement.Helpers;
+using CafeManagement.Utilities;
 using CafeManagement.Manager;
 using CafeManagement.Models;
 using CafeManagement.Services;
@@ -32,7 +32,7 @@ public class InvoiceManager
                     DisplayAllItems();
                     break;
                 case "2":
-                    Create();
+                    Add();
                     break;
                 case "3":
                     Update();
@@ -84,20 +84,15 @@ public class InvoiceManager
         string answer = Console.ReadLine();
         if (answer.ToUpper() == "Y")
         {
-            // In hóa đơn
             ConsoleHelper.PrintTitleMenu("Hóa Đơn");
             Console.WriteLine($"Mã hóa đơn: {invoice.Id}");
-            Console.WriteLine($"Mã đơn hàng: {invoice.OrderId}");
-            Console.WriteLine($"Ngày lập: {invoice.Date.ToShortDateString()}");
-            // Lấy thông tin đơn hàng từ OrderManager
-            Order order = _orderManager.orderService.GetById(invoice.OrderId);
-            foreach (OrderItem item in order.Items.ToList())
-            {
-                Product product = _orderManager.productService.GetById(item.ProductId);
-                Console.WriteLine($"{product.Name,-20} {item.UnitPrice,9:C} {item.Quantity,9} {item.UnitPrice * item.Quantity,12:C}");
-            }
+            Console.WriteLine($"Ngày lập hoá đơn: {invoice.Date.ToString(StringConstants.FORMAT_DATETIME)}");
             Console.WriteLine("------------------------------");
-            Console.WriteLine($"Tổng cộng: {order.Total():C}");
+            Order order = _orderManager.orderService.GetById(invoice.OrderId);
+            _orderManager.DisplayOrder(order);
+
+            Console.WriteLine("------------------------------");
+            Console.WriteLine($"Tổng cộng: {FormatHelper.FormatToVND(order.Total())}");
             Console.WriteLine("------------------------------");
             Console.WriteLine("Cảm ơn quý khách và hẹn gặp lại!");
         }
@@ -120,15 +115,14 @@ public class InvoiceManager
 
             if (invoice != null)
             {
-                ConsoleHelper.PrintTitleMenu("Hóa Đơn");
+                ConsoleHelper.PrintTitleMenu(StringConstants.INVOICE);
                 Console.WriteLine($"Mã hóa đơn: {invoice.Id}");
-                Console.WriteLine($"Mã đơn hàng: {invoice.OrderId}");
-                Console.WriteLine($"Ngày lập: {invoice.Date.ToShortDateString()}");
+                Console.WriteLine($"Ngày lập hoá đơn: {invoice.Date.ToShortDateString()}");
                 Order order = _orderManager.orderService.GetById(invoice.OrderId);
                 _orderManager.DisplayOrder(order);
 
                 Console.WriteLine("------------------------------");
-                Console.WriteLine($"Tổng cộng: {order.Total():C}");
+                Console.WriteLine($"Tổng cộng: {FormatHelper.FormatToVND(order.Total())}");
                 Console.WriteLine("------------------------------");
                 Console.WriteLine("Cảm ơn quý khách và hẹn gặp lại!");
             }
@@ -142,10 +136,11 @@ public class InvoiceManager
     /// <summary>
     /// Tạo hóa đơn mới.
     /// </summary>
-    public void Create()
+    public void Add()
     {
-        Console.WriteLine("Nhập thông tin hóa đơn mới:");
-        int orderId = ConsoleHelper.GetIntInput("Nhập mã đơn hàng: ");
+        Console.WriteLine(string.Format(StringConstants.ENTER_THE_INFORMATION_OF_X_TO_ADD, StringConstants.INVOICE)); // Yêu cầu nhập thông tin khách hàng
+        Console.WriteLine(); // Yêu cầu nhập thông tin khách hàng
+        int orderId = ConsoleHelper.GetIntInput(string.Format(StringConstants.INPUT_X, StringConstants.ORDER));
         Order order = _orderManager.orderService.GetById(orderId);
 
         if (order == null)
@@ -159,12 +154,12 @@ public class InvoiceManager
         // Thêm số điểm tính được vào điểm tích lũy của khách hàng
         _orderManager.customerService.AddPoints(pointsEarned);
 
-        // Tạo hóa đơn
+        // Tạo hóa đơn mới
         DateTime currentDate = DateTime.Now;
         Invoice invoice = new Invoice(0, orderId, currentDate);
 
         invoice = _invoiceService.Add(invoice);
-        Console.WriteLine("Hóa đơn đã được tạo thành công.");
+        Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.INVOICE));
         PrintInvoice(invoice);
     }
 
@@ -173,19 +168,19 @@ public class InvoiceManager
     /// </summary>
     public void Update()
     {
-        Console.Write("Nhập ID của hóa đơn cần cập nhật: ");
-        int invoiceId = ConsoleHelper.GetIntInput("Nhập ID của hóa đơn cần cập nhật: ");
+        int invoiceId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_UPDATE, StringConstants.INVOICE));
         Invoice invoice = _invoiceService.GetById(invoiceId);
         if (invoice == null)
         {
             Console.WriteLine(string.Format(StringConstants.X_WITH_THE_ENTERED_ID_WAS_NOT_FOUND, StringConstants.INVOICE));
             return;
         }
-        int orderId = ConsoleHelper.GetIntInput("Nhập vào mã đơn hàng bạn muốn thay đổi: ");
+        int orderId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_UPDATE, StringConstants.INVOICE));
         invoice.OrderId = orderId;
         invoice.Date = DateTime.Now;
         _invoiceService.Update(invoice);
-        Console.WriteLine("Hóa đơn đã được cập nhật.");
+        Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_UPDATE, StringConstants.INVOICE));
+
     }
 
     /// <summary>
@@ -193,9 +188,7 @@ public class InvoiceManager
     /// </summary>
     public void Delete()
     {
-        Console.Write("Nhập ID của hóa đơn cần xóa: ");
-        int invoiceId = int.Parse(Console.ReadLine());
-
+        int invoiceId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_DELETE, StringConstants.INVOICE));
         Invoice invoice = _invoiceService.GetById(invoiceId);
         if (invoice == null)
         {
@@ -203,8 +196,6 @@ public class InvoiceManager
             return;
         }
         _invoiceService.Delete(invoiceId);
-        Console.WriteLine("Hóa đơn đã được xóa.");
+        Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_DELETE, StringConstants.INVOICE));
     }
-}
-
 }

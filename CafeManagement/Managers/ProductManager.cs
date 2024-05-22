@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using CafeManagement.Constants;
-using CafeManagement.Helpers;
+using CafeManagement.Utilities;
 using CafeManagement.Models;
 using CafeManagement.Services;
+using System.Linq;
+using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace CafeManagement.Manager
 {
@@ -47,6 +51,9 @@ namespace CafeManagement.Manager
                     case 4:
                         Delete();
                         break;
+                    case 5:
+                        DisplayMenu();
+                        break;
                     case 0:
                         return;
                     default:
@@ -63,48 +70,63 @@ namespace CafeManagement.Manager
         /// <summary>
         /// Hiển thị tất cả sản phẩm.
         /// </summary>
-        private void DisplayAllItems()
+        public void DisplayAllItems()
         {
-            LinkedList<Product> products = _productService.GetAllItems();
-            if (products.Count > 0)
+            Utilities.LinkedList<Product> products = _productService.GetAllItems();
+            Utilities.LinkedList<Category> categories = _categoryService.GetAllItems();
+
+
+            ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
+            ConsoleHelper.PrintHeaderTable(StringConstants.PRODUCT);
+
+            // Sort the products by category and name
+            var sortedProducts = products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
+
+            int currentCategoryId = -1;
+            foreach (var product in sortedProducts)
             {
-                ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
+                if (product.CategoryId != currentCategoryId)
+                {
+                    if (currentCategoryId != -1)
+                    {
+                        ConsoleHelper.PrintHorizontalLineOfTable(50);
+                    }
+                    currentCategoryId = product.CategoryId;
+                    Category category = _categoryService.GetById(currentCategoryId);
+                    Console.WriteLine($"| {category.Name,-46} |"); // Print category name
+                }
+                product.ToString();
             }
-            else
-            {
-                Console.WriteLine(string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.PRODUCT));
-            }
-            foreach (Product product in products.ToList())
-            {
-                Console.WriteLine(product.ToString());
-            }
+            ConsoleHelper.PrintHorizontalLineOfTable(50);
         }
+
         /// <summary>
         /// Thêm một sản phẩm mới vào hệ thống.
         /// </summary>
         public void Add()
         {
-            ConsoleHelper.PrintTitleMenu("Thêm Sản Phẩm Mới");
-            Console.WriteLine("Danh sách các loại sản phẩm có sẵn:");
-            LinkedList<Category> categories = _categoryService.GetAllItems();
+            ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.INPUT_X_NEW, StringConstants.PRODUCT));
+            Console.WriteLine(string.Format(StringConstants.LIST_X, StringConstants.CATEGORY));
+            Utilities.LinkedList<Category> categories = _categoryService.GetAllItems();
             foreach (Category category in categories.ToList())
             {
                 Console.WriteLine($"{category.Id}. {category.Name}");
             }
-            Console.WriteLine("0. Thêm loại sản phẩm mới");
+            Console.WriteLine($"0. {string.Format(StringConstants.ADD_X_NEW, StringConstants.CATEGORY)}");
             int categoryId = ConsoleHelper.GetIntInput("Chọn loại sản phẩm: ");
             Category categoryNew = null;
             if (categoryId == 0)
             {
-                string categoryName = ConsoleHelper.GetStringInput("Nhập tên loại sản phẩm: ");
+                string categoryName = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY));
                 categoryNew = _categoryService.Add(new Category(categoryName));
+                categoryId = categoryNew.Id;
             }
 
-            string name = ConsoleHelper.GetStringInput("Nhập tên sản phẩm: ");
+            string name = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X, StringConstants.PRODUCT));
             double price = ConsoleHelper.GetDoubleInput("Nhập giá sản phẩm: ");
 
-            _productService.Add(new Product(name, categoryNew?.Id ?? categoryId, price));
-            Console.WriteLine("Đã thêm sản phẩm thành công!");
+            _productService.Add(new Product(name, categoryId, price));
+            Console.WriteLine(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.PRODUCT);
         }
 
         /// <summary>
@@ -174,7 +196,7 @@ namespace CafeManagement.Manager
         /// <returns>Trả về true nếu có thể xóa và false nếu sản phẩm có liên kết với đơn hàng.</returns>
         public bool CanDeleteProduct(int Id)
         {
-            LinkedList<Order> orders = _orderService.GetAllItems();
+            Utilities.LinkedList<Order> orders = _orderService.GetAllItems();
             Node<Order> order = orders.Find(p => p.Items.Contains(p.Items.Find(items => items.ProductId == Id).Data));
             if (orders != null)
             {
@@ -183,5 +205,73 @@ namespace CafeManagement.Manager
             return true;
         }
 
+        public void DisplayMenu()
+        {
+            Utilities.LinkedList<Product> products = _productService.GetAllItems();
+            Utilities.LinkedList<Category> categories = _categoryService.GetAllItems();
+            // Sort the products by category
+            var sortedProducts = products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
+            int categoryId = 0;
+            foreach (var product in sortedProducts)
+            {
+                if (product.CategoryId != categoryId)
+                {
+                    Category category = _categoryService.Find(X => X.Id == product.CategoryId);
+                    Console.WriteLine(category.Name.ToUpper());
+                    categoryId = category.Id;
+                    var productsInCategory = BinarySearchProductsByCategory(sortedProducts, categoryId);
+                    foreach (var productInCategory in productsInCategory)
+                    {
+                        Console.WriteLine($"{productInCategory.Id}. {productInCategory.Name}");
+                    }
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        private List<Product> BinarySearchProductsByCategory(List<Product> sortedProducts, int category)
+        {
+            int left = 0;
+            int right = sortedProducts.Count - 1;
+            List<Product> result = new List<Product>();
+
+            while (left <= right)
+            {
+                int mid = (left + right) / 2;
+
+                if (sortedProducts[mid].CategoryId.Equals(category))
+                {
+                    // Find the first and last occurrence of the category
+                    int first = mid;
+                    int last = mid;
+
+                    while (first > 0 && sortedProducts[first - 1].CategoryId.Equals(category))
+                    {
+                        first--;
+                    }
+
+                    while (last < sortedProducts.Count - 1 && sortedProducts[last + 1].CategoryId.Equals(category))
+                    {
+                        last++;
+                    }
+
+                    for (int i = first; i <= last; i++)
+                    {
+                        result.Add(sortedProducts[i]);
+                    }
+
+                    break;
+                }
+                else if (sortedProducts[mid].CategoryId != category)
+                {
+                    left = mid + 1;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+            return result;
+        }
     }
 }

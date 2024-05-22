@@ -1,4 +1,5 @@
 ﻿using System;
+using CafeManagement.Utilities;
 
 namespace CafeManagement.Models
 {
@@ -23,6 +24,11 @@ namespace CafeManagement.Models
         public DateTime OrderDate { get; set; }      // Ngày đặt hàng
 
         /// <summary>
+        /// Điểm thay thế tiền (1000đ = 1 điểm).
+        /// </summary>
+        public double Points { get; set; }
+
+        /// <summary>
         /// Danh sách sản phẩm trong đơn hàng.
         /// </summary>
         public LinkedList<OrderItem> Items { get; set; }   // Danh sách sản phẩm trong đơn hàng
@@ -34,12 +40,14 @@ namespace CafeManagement.Models
         /// <param name="customerId">Thông tin khách hàng.</param>
         /// <param name="orderDate">Ngày đặt hàng.</param>
         /// <param name="items">Danh sách sản phẩm trong đơn hàng.</param>
-        public Order(int id, int customerId, DateTime orderDate, LinkedList<OrderItem> items)
+        /// <param name="points">Danh sách sản phẩm trong đơn hàng.</param>
+        public Order(int id, int customerId, DateTime orderDate, LinkedList<OrderItem> items, double points = 0)
         {
             Id = id;
             CustomerId = customerId;
             OrderDate = orderDate;
             Items = items;
+            Points = points;
         }
 
         /// <summary>
@@ -53,7 +61,9 @@ namespace CafeManagement.Models
             {
                 totalPrice += item.TotalPrice();
             }
-            return totalPrice;
+            if (totalPrice - Points * 1000 <= 0)
+                return 0;
+            return totalPrice - Points * 1000;
         }
 
         /// <summary>
@@ -74,17 +84,17 @@ namespace CafeManagement.Models
         /// <summary>
         /// Sản phẩm.
         /// </summary>
-        public int ProductId { get; set; } // Sản phẩm
+        public int ProductId { get; set; }
 
         /// <summary>
         /// Số lượng.
         /// </summary>
-        public int Quantity { get; set; }    // Số lượng
+        public int Quantity { get; set; }
 
         /// <summary>
         /// Giá của một đơn vị sản phẩm.
         /// </summary>
-        public double UnitPrice { get; set; } // Giá sản phẩm
+        public double UnitPrice { get; set; }
 
         /// <summary>
         /// Khởi tạo một đối tượng OrderItem mới.
@@ -114,7 +124,7 @@ namespace CafeManagement.Models
         /// <returns>Chuỗi biểu diễn thông tin của mặt hàng.</returns>
         public override string ToString()
         {
-            return $"ProductId: {ProductId}, Số lượng: {Quantity}, Giá:${UnitPrice}";
+            return $"ProductId: {ProductId}, Số lượng: {Quantity}, Giá:{UnitPrice}";
         }
     }
 }
