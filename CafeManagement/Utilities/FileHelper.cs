@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace CafeManagement.Utilities
 {
     public static class FileHelper
     {
-        public static Models.LinkedList<string> ReadFromFile(string filePath)
+        public static LinkedList<string> ReadFromFile(string filePath)
         {
-            Models.LinkedList<string> lines = new Models.LinkedList<string>();
+            LinkedList<string> lines = new LinkedList<string>();
             if (File.Exists(filePath))
             {
                 lines.AddRange(File.ReadAllLines(filePath));
@@ -15,7 +14,7 @@ namespace CafeManagement.Utilities
             return lines;
         }
 
-        public static void WriteToFile(string filePath, Models.LinkedList<string> lines)
+        public static void WriteToFile(string filePath, LinkedList<string> lines)
         {
             File.WriteAllLines(filePath, lines.ToList());
         }

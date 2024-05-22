@@ -102,37 +102,28 @@ namespace CafeManagement.Utilities
         /// <returns>Chuỗi biểu diễn columns header.</returns>
         public static void PrintHeaderTable(string title)
         {
+            PrintHorizontalLineOfTable(title);
             switch (title)
             {
                 case StringConstants.CATEGORY:
-                    PrintHorizontalLineOfTable(37);
                     Console.WriteLine($"| {"ID",-5} | {"Tên loại sản phẩm",-25} |");
-                    PrintHorizontalLineOfTable(37);
                     break;
                 case StringConstants.PRODUCT:
-                    PrintHorizontalLineOfTable(50);
                     Console.WriteLine($"| {"ID",-5} | {"Tên sản phẩm",-25} | {"Giá",-15} |");
-                    PrintHorizontalLineOfTable(50);
                     break;
                 case StringConstants.ORDER:
-                    PrintHorizontalLineOfTable(94);
                     Console.WriteLine($"| {"STT",-5} | {"ID",-5} | {"Tên sản phẩm",-25} | {"Giá",15} | {"Số lượng",10} | {"Thành tiền",-15} |");
-                    PrintHorizontalLineOfTable(94);
                     break;
                 case StringConstants.CUSTOMER:
-                    PrintHorizontalLineOfTable(45);
                     Console.WriteLine($"| {"Mã",5} | {"Tên",-25} | {"Ngày sinh",-10} | {"Email",-25} | {"SĐT",-10} | {"Điểm",10} |");
-                    PrintHorizontalLineOfTable(45);
                     break;
                 case StringConstants.INVOICE:
-                    PrintHorizontalLineOfTable(45);
                     Console.WriteLine($"| {"Mã",-5} | {"Mã đơn hàng",-15} | {"Thành tiền",-20} |");
-                    PrintHorizontalLineOfTable(45);
                     break;
                 default:
                     break;
-
             }
+            PrintHorizontalLineOfTable(title);
         }
 
         public static void PrintMenuDetails(string name)
@@ -150,9 +141,30 @@ namespace CafeManagement.Utilities
         /// In dòng kẻ ngang của bảng
         /// </summary>
         /// <param name="len"></param>
-        public static void PrintHorizontalLineOfTable(int len)
+        public static void PrintHorizontalLineOfTable(string title)
         {
-            Console.WriteLine(new string('-', len));
+            switch (title)
+            {
+                case StringConstants.CATEGORY:
+                    Console.WriteLine(new string('-', 37));
+                    break;
+                case StringConstants.PRODUCT:
+                    Console.WriteLine(new string('-', 50));
+                    break;
+                case StringConstants.ORDER:
+                    Console.WriteLine(new string('-', 94));
+                    break;
+                case StringConstants.CUSTOMER:
+                    Console.WriteLine(new string('-', 104));
+                    break;
+                case StringConstants.INVOICE:
+                    Console.WriteLine(new string('-', 45));
+                    break;
+                default:
+                    break;
+
+            }
         }
+
     }
 }

@@ -89,7 +89,7 @@ namespace CafeManagement.Manager
                     Console.WriteLine($"| {i,5} {product.ToString()} {item.Quantity,10} | {FormatHelper.FormatToVND(item.TotalPrice()),15} |");
                 }
             }
-            ConsoleHelper.PrintHorizontalLineOfTable(94);
+            ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.ORDER);
 
             Console.WriteLine($"Tổng tiền : {FormatHelper.FormatToVND(order.Total())}");
         }

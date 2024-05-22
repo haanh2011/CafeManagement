@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using CafeManagement.Constants;
 using CafeManagement.Manager;
@@ -10,7 +9,7 @@ namespace CafeManagement.Services
 {
     public class OrderService
     {
-        private Models.LinkedList<Order> _orders;
+        private LinkedList<Order> _orders;
         private readonly string _filePath;
 
         public OrderService(string filePath)
@@ -19,7 +18,7 @@ namespace CafeManagement.Services
             _orders = DataManager.LoadOrders(_filePath);
         }
 
-        public Models.LinkedList<Order> GetAllItems()
+        public LinkedList<Order> GetAllItems()
         {
             _orders = DataManager.LoadOrders(_filePath);
             return _orders;

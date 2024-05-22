@@ -89,15 +89,15 @@ namespace CafeManagement.Manager
                 {
                     if (currentCategoryId != -1)
                     {
-                        ConsoleHelper.PrintHorizontalLineOfTable(50);
+                        ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.PRODUCT);
                     }
                     currentCategoryId = product.CategoryId;
                     Category category = _categoryService.GetById(currentCategoryId);
-                    Console.WriteLine($"| {category.Name,-46} |"); // Print category name
+                    Console.WriteLine($"| {category.Name,-51} |"); // Print category name
                 }
-                product.ToString();
+                Console.WriteLine(product.ToString());
             }
-            ConsoleHelper.PrintHorizontalLineOfTable(50);
+            ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.PRODUCT);
         }
 
         /// <summary>

@@ -70,6 +70,7 @@ namespace CafeManagement.Manager
             if (customers.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CUSTOMER)); // Hiển thị tiêu đề danh sách
+                ConsoleHelper.PrintHeaderTable(StringConstants.CUSTOMER);
             }
             else
             {
@@ -78,6 +79,10 @@ namespace CafeManagement.Manager
             foreach (Customer customer in customers.ToList())
             {
                 Console.WriteLine(customer.ToString()); // Hiển thị thông tin của từng khách hàng
+            }
+            if (customers.Count > 0)
+            {
+                ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.CUSTOMER);
             }
         }
 

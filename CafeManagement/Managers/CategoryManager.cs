@@ -69,6 +69,8 @@ namespace CafeManagement.Manager
             if (categories.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CATEGORY)); // In tiêu đề danh sách danh mục sản phẩm
+                ConsoleHelper.PrintHeaderTable(StringConstants.CATEGORY);
+
             }
             else
             {
@@ -80,7 +82,7 @@ namespace CafeManagement.Manager
             }
             if (categories.Count > 0)
             {
-                ConsoleHelper.PrintHorizontalLineOfTable(37);
+                ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.CATEGORY);
 
             }
         }
@@ -140,7 +142,7 @@ namespace CafeManagement.Manager
                 return;
             }
             _categoryService.Delete(categoryId); // Xóa danh mục
-            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_REMOVE, StringConstants.CATEGORY)); // Thông báo đã xóa thành công
+            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_DELETE, StringConstants.CATEGORY)); // Thông báo đã xóa thành công
         }
 
         /// <summary>
