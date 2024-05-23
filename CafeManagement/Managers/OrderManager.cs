@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CafeManagement.Models;
 using CafeManagement.Services;
 using CafeManagement.Utilities;
@@ -236,7 +237,7 @@ namespace CafeManagement.Manager
             Console.WriteLine("Danh sách sản phẩm trong đơn hàng:");
             for (int i = 0; i < order.Items.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {order.Items.FindNodeAtIndex(i)}");
+                Console.WriteLine($"{i + 1}. {order.Items.DataElementOfIndex(i)}");
             }
 
             while (true)
