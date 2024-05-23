@@ -118,7 +118,7 @@ namespace CafeManagement.Utilities
                     Console.WriteLine($"| {"Mã",5} | {"Tên",-25} | {"Ngày sinh",-10} | {"Email",-25} | {"SĐT",-10} | {"Điểm",10} |");
                     break;
                 case StringConstants.INVOICE:
-                    Console.WriteLine($"| {"Mã",-5} | {"Mã đơn hàng",-15} | {"Thành tiền",-20} |");
+                    Console.WriteLine($"| {"Mã",-5} | {"Mã đơn hàng",-15} | {"Ngày lập hoá đơn",-20} |");
                     break;
                 default:
                     break;

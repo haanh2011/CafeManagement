@@ -73,10 +73,12 @@ namespace CafeManagement.Manager
             if (_invoices.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.INVOICE));
+                ConsoleHelper.PrintHeaderTable(StringConstants.INVOICE);
                 foreach (Invoice invoice in _invoices.ToList())
                 {
                     Console.WriteLine(invoice.ToString());
                 }
+                ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.INVOICE);
             }
             else
             {
@@ -175,7 +177,7 @@ namespace CafeManagement.Manager
         {
             Console.WriteLine(string.Format(StringConstants.ENTER_THE_INFORMATION_OF_X_TO_ADD, StringConstants.INVOICE)); // Yêu cầu nhập thông tin khách hàng
             Console.WriteLine(); // Yêu cầu nhập thông tin khách hàng
-            int orderId = ConsoleHelper.GetIntInput(string.Format(StringConstants.INPUT_X, StringConstants.ORDER));
+            int orderId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_ADD, StringConstants.ORDER));
             Order order = _orderService.GetById(orderId);
 
             if (order == null)
