@@ -26,7 +26,7 @@
     <UpdateUrl>https://localhost/CafeManagement/</UpdateUrl>
     <TargetCulture>vi-VN</TargetCulture>
     <ProductName>QuanLyQuanCaPhe</ProductName>
-    <PublisherName>QuanLyQuanCaPhe</PublisherName>
+    <PublisherName>Quản Lý Quán Cà Phê</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
@@ -34,6 +34,7 @@
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <BootstrapperComponentsLocation>Relative</BootstrapperComponentsLocation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
