@@ -32,27 +32,27 @@ namespace CafeManagement.Manager
             _orderService.GetAllItems();
             _productService.GetAllItems();
             _customerService.GetAllItems();
-            _invoices = _invoiceService.Invoices;
+            _invoices = _invoiceService.Invoices; 
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.INVOICE);
-                var choice = Console.ReadLine();
+                int choice = ConsoleHelper.GetIntInput(StringConstants.CHOOSE_AN_OPTION);
                 Console.WriteLine();
                 switch (choice)
                 {
-                    case "1":
+                    case 1:
                         DisplayAllItems();
                         break;
-                    case "2":
+                    case 2:
                         Add();
                         break;
-                    case "3":
+                    case 3:
                         Update();
                         break;
-                    case "4":
+                    case 4:
                         Delete();
                         break;
-                    case "0":
+                    case 0:
                         return;
                     default:
                         Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
@@ -116,8 +116,7 @@ namespace CafeManagement.Manager
         public void PrintInvoice(Invoice invoice)
         {
             // Hỏi người dùng có muốn xuất hóa đơn không
-            Console.Write("Bạn có muốn in hóa đơn không? (Y/N): ");
-            string answer = Console.ReadLine();
+            string answer = ConsoleHelper.GetStringInput("Bạn có muốn in hóa đơn không? (Y/N): ");
             if (answer.ToUpper() == "Y")
             {
                 // In hóa đơn
@@ -143,8 +142,7 @@ namespace CafeManagement.Manager
         public void PrintInvoiceById(int invoiceId)
         {
             // Hỏi người dùng có muốn xuất hóa đơn không
-            Console.Write("Bạn có muốn in hóa đơn không? (Y/N): ");
-            string answer = Console.ReadLine();
+            string answer = ConsoleHelper.GetStringInput("Bạn có muốn in hóa đơn không? (Y/N): ");
 
             if (answer.ToUpper() == "Y")
             {

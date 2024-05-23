@@ -42,7 +42,7 @@ namespace CafeManagement.Manager
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.PRODUCT);
-                int choice = ConsoleHelper.GetIntInput(StringConstants.ENTER_YOUR_SELECTION);
+                int choice = ConsoleHelper.GetIntInput(StringConstants.CHOOSE_AN_OPTION);
                 Console.WriteLine();
 
                 switch (choice)
@@ -58,9 +58,6 @@ namespace CafeManagement.Manager
                         break;
                     case 4:
                         Delete();
-                        break;
-                    case 5:
-                        DisplayMenu();
                         break;
                     case 0:
                         return;
@@ -213,73 +210,6 @@ namespace CafeManagement.Manager
                 }
             }
             return true;
-        }
-
-        public void DisplayMenu()
-        {
-            // Sort the products by category
-            var sortedProducts = _products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
-            int categoryId = 0;
-            foreach (var product in sortedProducts)
-            {
-                if (product.CategoryId != categoryId)
-                {
-                    Category category = _categoryService.Find(X => X.Id == product.CategoryId);
-                    Console.WriteLine(category.Name.ToUpper());
-                    categoryId = category.Id;
-                    var productsInCategory = BinarySearchProductsByCategory(sortedProducts, categoryId);
-                    foreach (var productInCategory in productsInCategory)
-                    {
-                        Console.WriteLine($"{productInCategory.Id}. {productInCategory.Name}");
-                    }
-                    Console.WriteLine();
-                }
-            }
-        }
-
-        private List<Product> BinarySearchProductsByCategory(List<Product> sortedProducts, int category)
-        {
-            int left = 0;
-            int right = sortedProducts.Count - 1;
-            List<Product> result = new List<Product>();
-
-            while (left <= right)
-            {
-                int mid = (left + right) / 2;
-
-                if (sortedProducts[mid].CategoryId.Equals(category))
-                {
-                    // Find the first and last occurrence of the category
-                    int first = mid;
-                    int last = mid;
-
-                    while (first > 0 && sortedProducts[first - 1].CategoryId.Equals(category))
-                    {
-                        first--;
-                    }
-
-                    while (last < sortedProducts.Count - 1 && sortedProducts[last + 1].CategoryId.Equals(category))
-                    {
-                        last++;
-                    }
-
-                    for (int i = first; i <= last; i++)
-                    {
-                        result.Add(sortedProducts[i]);
-                    }
-
-                    break;
-                }
-                else if (sortedProducts[mid].CategoryId != category)
-                {
-                    left = mid + 1;
-                }
-                else
-                {
-                    right = mid - 1;
-                }
-            }
-            return result;
         }
     }
 }

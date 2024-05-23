@@ -34,23 +34,23 @@ namespace CafeManagement.Manager
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.CATEGORY); // In ra menu quản lý danh mục sản phẩm
-                var choice = Console.ReadLine(); // Nhận lựa chọn từ người dùng
+                int choice = ConsoleHelper.GetIntInput(StringConstants.CHOOSE_AN_OPTION);
                 Console.WriteLine();
                 switch (choice)
                 {
-                    case "1":
+                    case 1:
                         DisplayAllItems(); // Hiển thị tất cả các danh mục
                         break;
-                    case "2":
+                    case 2:
                         Add(); // Thêm danh mục mới
                         break;
-                    case "3":
+                    case 3:
                         Update(); // Cập nhật danh mục
                         break;
-                    case "4":
+                    case 4:
                         Delete(); // Xóa danh mục
                         break;
-                    case "0":
+                    case 0:
                         return; // Thoát khỏi menu
                     default:
                         Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION); // Thông báo lựa chọn không hợp lệ

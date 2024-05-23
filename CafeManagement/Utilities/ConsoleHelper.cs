@@ -134,7 +134,6 @@ namespace CafeManagement.Utilities
             Console.WriteLine("3. " + FormatHelper.ToTitleCase(string.Format(StringConstants.UPDATE_X, name)));
             Console.WriteLine("4. " + FormatHelper.ToTitleCase(string.Format(StringConstants.DELETE_X, name)));
             Console.WriteLine("0. " + StringConstants.BACK);
-            Console.Write(StringConstants.CHOOSE_AN_OPTION);
         }
 
         /// <summary>

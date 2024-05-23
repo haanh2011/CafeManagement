@@ -37,24 +37,24 @@ namespace CafeManagement.Manager
             _customers = _customerService.Customers; // Danh sách khách hàng
             while (true)
             {
-                ConsoleHelper.PrintMenuDetails(StringConstants.CUSTOMER); // Hiển thị tiêu đề menu
-                var choice = Console.ReadLine(); // Nhập lựa chọn từ người dùng
+                 ConsoleHelper.PrintMenuDetails(StringConstants.CUSTOMER); // Hiển thị tiêu đề menu
+                int choice = ConsoleHelper.GetIntInput(StringConstants.CHOOSE_AN_OPTION); // Nhập lựa chọn từ người dùng
                 Console.WriteLine();
                 switch (choice)
                 {
-                    case "1":
+                    case 1:
                         DisplayAllItems(); // Hiển thị danh sách tất cả khách hàng
                         break;
-                    case "2":
+                    case 2:
                         Add(); // Thêm khách hàng mới
                         break;
-                    case "3":
+                    case 3:
                         Update(); // Cập nhật thông tin khách hàng
                         break;
-                    case "4":
+                    case 4:
                         Delete(); // Xóa khách hàng
                         break;
-                    case "0":
+                    case 0:
                         return;
                     default:
                         Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION); // Thông báo lựa chọn không hợp lệ
@@ -141,29 +141,27 @@ namespace CafeManagement.Manager
                     Console.WriteLine("3. " + FormatHelper.ToTitleCase(StringConstants.PHONENUMBER));
                     Console.WriteLine("4. " + FormatHelper.ToTitleCase(StringConstants.EMAIL));
                     Console.WriteLine(StringConstants.BACK);
-                    Console.Write(StringConstants.CHOOSE_AN_OPTION);
-
-                    var choice = Console.ReadLine();
+                    int choice = ConsoleHelper.GetIntInput(StringConstants.CHOOSE_AN_OPTION);
                     Console.WriteLine();
                     switch (choice)
                     {
-                        case "1":
+                        case 1:
                             string newName = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CUSTOMER));
                             customer.Name = newName; // Cập nhật tên khách hàng
                             break;
-                        case "2":
+                        case 2:
                             DateTime birthday = ConsoleHelper.GetDateTimeInput($"\t{string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.BIRTHDAY)} ({StringConstants.FORMAT_DATE}):");
                             customer.Birthday = birthday; // Cập nhật ngày sinh của khách hàng
                             break;
-                        case "3":
+                        case 3:
                             string phoneNumber = ConsoleHelper.GetStringInput("\t" + string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.PHONENUMBER));
                             customer.PhoneNumber = phoneNumber; // Cập nhật số điện thoại của khách hàng
                             break;
-                        case "4":
+                        case 4:
                             string email = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.EMAIL));
                             customer.Email = email; // Cập nhật địa chỉ email của khách hàng
                             break;
-                        case "0":
+                        case 0:
                             return;
                         default:
                             Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);

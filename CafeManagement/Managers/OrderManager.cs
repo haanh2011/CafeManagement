@@ -12,13 +12,16 @@ namespace CafeManagement.Manager
         public OrderService orderService;
         public ProductService productService;
         public CustomerService customerService;
+        private CategoryService _categoryService;
         private static LinkedList<Order> _orders;
+        private static LinkedList<Product> _products;
 
         public OrderManager()
         {
             orderService = new OrderService("Data/OrderData.txt");
             productService = new ProductService("Data/ProductData.txt");
             customerService = new CustomerService("Data/CustomerData.txt");
+            _categoryService = new CategoryService("Data/CategoryData.txt");
         }
 
         public void ShowMenu()
@@ -30,23 +33,23 @@ namespace CafeManagement.Manager
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.ORDER);
-                var choice = Console.ReadLine();
+                int choice = ConsoleHelper.GetIntInput(StringConstants.CHOOSE_AN_OPTION);
                 Console.WriteLine();
                 switch (choice)
                 {
-                    case "1":
+                    case 1:
                         DisplayAllItems();
                         break;
-                    case "2":
+                    case 2:
                         Add();
                         break;
-                    case "3":
+                    case 3:
                         UpdateOrder();
                         break;
-                    case "4":
+                    case 4:
                         Delete();
                         break;
-                    case "0":
+                    case 0:
                         return;
                     default:
                         Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
@@ -98,6 +101,32 @@ namespace CafeManagement.Manager
             Console.WriteLine($"Tổng tiền : {FormatHelper.FormatToVND(order.Total())}");
         }
 
+
+        public void DisplayAllProducts()
+        {
+            ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
+            ConsoleHelper.PrintHeaderTable(StringConstants.PRODUCT);
+
+            // Sort the products by category and name
+            var sortedProducts = _products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
+
+            int currentCategoryId = -1;
+            foreach (var product in sortedProducts)
+            {
+                if (product.CategoryId != currentCategoryId)
+                {
+                    if (currentCategoryId != -1)
+                    {
+                        ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.PRODUCT);
+                    }
+                    currentCategoryId = product.CategoryId;
+                    Category category = _categoryService.GetById(currentCategoryId);
+                    Console.WriteLine($"| {category.Name,-51} |"); // Print category name
+                }
+                Console.WriteLine(product.ToString());
+            }
+            ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.PRODUCT);
+        }
         public void DisplayOrderById(int orderId)
         {
             Order order = orderService.GetById(orderId);
@@ -120,9 +149,8 @@ namespace CafeManagement.Manager
             if (customer == null)
             {
                 Console.WriteLine("Không tìm thấy thông tin khách hàng với số điện thoại này.");
-                Console.WriteLine("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
 
-                string createNewCustomer = Console.ReadLine();
+                string createNewCustomer = ConsoleHelper.GetStringInput("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
                 if (createNewCustomer.ToUpper() == "Y")
                 {
                     // Nhập thông tin mới của khách hàng
@@ -141,7 +169,7 @@ namespace CafeManagement.Manager
                     return; // Quay lại menu chính nếu không muốn tạo mới
                 }
             }
-
+            DisplayAllProducts();
             DateTime orderDate = DateTime.Now;
             LinkedList<OrderItem> items = new LinkedList<OrderItem>();
             while (true)
@@ -311,8 +339,7 @@ namespace CafeManagement.Manager
         /// <param name="order">Đơn hàng cần cập nhật thông tin khách hàng.</param>
         public void UpdateCustomer(Order order)
         {
-            Console.WriteLine("Nhập số điện thoại khách hàng:");
-            string phoneNumber = Console.ReadLine();
+            string phoneNumber = ConsoleHelper.GetStringInput("Nhập số điện thoại khách hàng: ");
 
             // Tìm kiếm thông tin khách hàng dựa trên số điện thoại
             Customer customer = customerService.GetByPhoneNumber(phoneNumber);
@@ -320,9 +347,7 @@ namespace CafeManagement.Manager
             if (customer == null)
             {
                 Console.WriteLine("Không tìm thấy thông tin khách hàng với số điện thoại này.");
-                Console.WriteLine("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
-
-                string createNewCustomer = Console.ReadLine();
+                string createNewCustomer = ConsoleHelper.GetStringInput("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
                 if (createNewCustomer.ToUpper() == "Y")
                 {
                     // Nhập thông tin mới của khách hàng

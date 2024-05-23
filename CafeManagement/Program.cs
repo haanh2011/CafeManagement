@@ -3,6 +3,7 @@ using System.Text;
 using CafeManagement.Constants;
 using CafeManagement.Utilities;
 using CafeManagement.Manager;
+using System.Runtime.InteropServices;
 
 namespace CafeManagement
 {
@@ -14,9 +15,28 @@ namespace CafeManagement
         static OrderManager orderManager = new OrderManager();
         static InvoiceManager invoiceManager = new InvoiceManager();
         static CustomerManager customerManager = new CustomerManager();
+        const int STD_OUTPUT_HANDLE = -11;
+        const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
         static void Main(string[] args)
         {
+            // Bật hỗ trợ ANSI
+            if (EnableVirtualTerminalProcessing())
+            {
+                Console.WriteLine("\x1b[32mConsole hỗ trợ các lệnh điều khiển ANSI.\x1b[0m");
+            }
+            else
+            {
+                Console.WriteLine("Console không hỗ trợ các lệnh điều khiển ANSI.");
+            }
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
@@ -60,6 +80,27 @@ namespace CafeManagement
                         break;
                 }
             }
+        }
+        static bool EnableVirtualTerminalProcessing()
+        {
+            IntPtr handle = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (handle == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            if (!GetConsoleMode(handle, out uint mode))
+            {
+                return false;
+            }
+
+            mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            if (!SetConsoleMode(handle, mode))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

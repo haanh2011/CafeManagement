@@ -9,11 +9,11 @@ namespace CafeManagement.Constants
         public const string FORMAT_DATETIME = "d/M/yyyy hh:mm";
         public const string TITLE_PROJECT = "QUẢN LÝ QUÁN CÀ PHÊ";
         public const string MANAGE_X = "quản lý {0}";
-        public const string CATEGORY = "loại sản phẩm";
-        public const string PRODUCT = "sản phẩm";
-        public const string ORDER = "đơn hàng";
-        public const string INVOICE = "hóa đơn";
-        public const string CUSTOMER = "khách hàng";
+        public const string CATEGORY = "Loại Sản Phẩm";
+        public const string PRODUCT = "Sản Phẩm";
+        public const string ORDER = "Đơn Hàng";
+        public const string INVOICE = "Hóa Đơn";
+        public const string CUSTOMER = "Khách Hàng";
         public const string TOTAL_AMOUNT = "Thành tiền";
         public const string ENTER_YOUR_SELECTION = "Nhập lựa chọn của bạn: ";
         public const string DISPLAY_LIST_X = "Hiển thị danh sách {0}";
