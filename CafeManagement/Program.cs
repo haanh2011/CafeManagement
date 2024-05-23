@@ -20,6 +20,7 @@ namespace CafeManagement
             Console.OutputEncoding = Encoding.Unicode;
             Console.InputEncoding = Encoding.Unicode;
 
+            Console.Title = StringConstants.TITLE_PROJECT;
             while (true)
             {
                 ConsoleHelper.PrintTitleMenu(StringConstants.TITLE_PROJECT);
