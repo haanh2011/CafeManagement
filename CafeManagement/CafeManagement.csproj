@@ -58,15 +58,14 @@
     <StartupObject>CafeManagement.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>cafeshoplogoIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <TargetZone>
-    </TargetZone>
+    <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
