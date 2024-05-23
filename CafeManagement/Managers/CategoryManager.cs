@@ -139,7 +139,6 @@ namespace CafeManagement.Manager
                 return;
             }
             _categoryService.Delete(categoryId); // Xóa danh mục
-            Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_DELETE, StringConstants.CATEGORY)); // Thông báo đã xóa thành công
         }
 
         /// <summary>

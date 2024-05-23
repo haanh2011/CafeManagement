@@ -118,13 +118,18 @@ namespace CafeManagement.Manager
             Console.WriteLine($"0. {string.Format(StringConstants.ADD_X_NEW, StringConstants.CATEGORY)}");
             int categoryId = ConsoleHelper.GetIntInput("Nhập mã loại sản phẩm có trên danh sách (Nhập 0 để tạo mới loại sản phẩm): ");
             Category categoryNew = null;
+            categoryNew = _categoryService.Find(x => x.Id == categoryId);
+            if (categoryId != 0 && categoryNew == null)
+            {
+                Console.WriteLine(string.Format(StringConstants.X_WITH_THE_ENTERED_ID_WAS_NOT_FOUND, StringConstants.CATEGORY));
+                return;
+            }
             if (categoryId == 0)
             {
                 string categoryName = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY));
                 categoryNew = _categoryService.Add(new Category(categoryName));
                 categoryId = categoryNew.Id;
             }
-
             string name = ConsoleHelper.GetStringInput(string.Format(StringConstants.INPUT_NAME_OF_X, StringConstants.PRODUCT));
             double price = ConsoleHelper.GetDoubleInput("Nhập giá sản phẩm: ");
 
@@ -199,10 +204,13 @@ namespace CafeManagement.Manager
         /// <returns>Trả về true nếu có thể xóa và false nếu sản phẩm có liên kết với đơn hàng.</returns>
         public bool CanDeleteProduct(int Id)
         {
-            Node<Order> order = _orders.Find(p => p.Items.Contains(p.Items.Find(items => items.ProductId == Id).Data));
-            if (_orders != null)
+            foreach (var order in _orders.ToList())
             {
-                return false;
+                var orderItem = order.Items?.Find(p => p?.ProductId == Id);
+                if (orderItem != null)
+                {
+                    return false;
+                }
             }
             return true;
         }

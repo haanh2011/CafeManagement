@@ -182,7 +182,7 @@ namespace CafeManagement.Manager
             int customerId = ConsoleHelper.GetIntInput(string.Format(StringConstants.ENTER_THE_ID_OF_X_TO_DELETE, StringConstants.CUSTOMER)); // Nhập mã số khách hàng cần xóa
             if (!CanDeleteCustomer(customerId))
             {
-                Console.WriteLine(string.Format(StringConstants.CANNOT_DELETE_X_ASSOCIATED_Y, StringConstants.CUSTOMER), StringConstants.ORDER); // Thông báo không thể xóa nếu có đơn hàng liên kết với khách hàng
+                Console.WriteLine(string.Format(StringConstants.CANNOT_DELETE_X_ASSOCIATED_Y, StringConstants.CUSTOMER, StringConstants.ORDER)); // Thông báo không thể xóa nếu có đơn hàng liên kết với khách hàng
                 return;
             }
             _customerService.Delete(customerId); // Xóa khách hàng nếu không có đơn hàng liên kết

@@ -2,6 +2,7 @@
 using CafeManagement.Manager;
 using CafeManagement.Models;
 using CafeManagement.Utilities;
+using CafeManagement.Constants;
 
 namespace CafeManagement.Services
 {
@@ -87,11 +88,11 @@ namespace CafeManagement.Services
             {
                 Categories.RemoveNode(category);
                 DataManager.SaveCategories(_filePath, Categories);
-                Console.WriteLine("Sản phẩm đã được xóa.");
+                Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_DELETE,StringConstants.CATEGORY));
             }
             else
             {
-                Console.WriteLine("Không tìm thấy sản phẩm với mã số đó.");
+                Console.WriteLine(string.Format(StringConstants.X_WITH_THE_ENTERED_ID_WAS_NOT_FOUND,StringConstants.CATEGORY));
             }
         }
 

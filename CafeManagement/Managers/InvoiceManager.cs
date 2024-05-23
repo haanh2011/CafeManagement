@@ -184,7 +184,7 @@ namespace CafeManagement.Manager
                 return;
             }
             // Tính số điểm từ tổng tiền (1000 = 1 point)
-            int pointsEarned = (int)(order.Total() / 1000);
+            int pointsEarned = (int)(order.Total() / 10000);
 
             // Thêm số điểm tính được vào điểm tích lũy của khách hàng
             _customerService.AddPoints(pointsEarned);
