@@ -10,7 +10,7 @@ namespace CafeManagement.Services
     /// </summary>
     public class CustomerService
     {
-        private LinkedList<Customer> _customers; // Danh sách các khách hàng
+        public LinkedList<Customer> Customers; // Danh sách các khách hàng
         private readonly string _filePath; // Đường dẫn đến tệp danh sách khách hàng
 
         /// <summary>
@@ -20,16 +20,16 @@ namespace CafeManagement.Services
         public CustomerService(string filePath)
         {
             _filePath = filePath;
-            _customers = DataManager.LoadCustomers(filePath); // Tải danh sách khách hàng từ tệp
+            Customers = DataManager.LoadCustomers(_filePath); // Tải danh sách khách hàng từ tệp
         }
 
         /// <summary>
         /// Lấy tất cả các khách hàng.
         /// </summary>
         /// <returns>Danh sách các khách hàng.</returns>
-        public LinkedList<Customer> GetAllItems()
+        public void GetAllItems()
         {
-            return _customers; // Trả về danh sách tất cả khách hàng
+            Customers = DataManager.LoadCustomers(_filePath); // Tải danh sách khách hàng từ tệp
         }
 
         /// <summary>
@@ -38,17 +38,14 @@ namespace CafeManagement.Services
         /// <param name="points">Số điểm được thêm cho mỗi khách hàng.</param>
         public void AddPoints(int points)
         {
-            // Lấy danh sách khách hàng
-            LinkedList<Customer> customers = GetAllItems();
-
             // Thêm điểm cho từng khách hàng
-            foreach (Customer customer in customers.ToList())
+            foreach (Customer customer in Customers.ToList())
             {
                 customer.AddPoints(points);
             }
 
             // Lưu danh sách khách hàng với điểm mới
-            DataManager.SaveCustomers(_filePath, customers);
+            DataManager.SaveCustomers(_filePath, Customers);
         }
 
         /// <summary>
@@ -58,13 +55,13 @@ namespace CafeManagement.Services
         /// <returns>Khách hàng đã được thêm.</returns>
         public Customer Add(Customer customer)
         {
-            Customer customerMax = _customers.Max(c => c.Id);
-            int maxId = _customers.Count > 0 ? customerMax.Id : 0;
+            Customer customerMax = Customers.Max(c => c.Id);
+            int maxId = Customers.Count > 0 ? customerMax.Id : 0;
             customer.Id = maxId + 1;
 
-            _customers.AddLast(customer); // Thêm khách hàng mới vào danh sách
+            Customers.AddLast(customer); // Thêm khách hàng mới vào danh sách
 
-            DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
+            DataManager.SaveCustomers(_filePath, Customers); // Lưu danh sách khách hàng vào tệp
             return customer;
         }
 
@@ -74,12 +71,12 @@ namespace CafeManagement.Services
         /// <param name="updatedCustomer">Khách hàng cần cập nhật.</param>
         public void Update(Customer updatedCustomer)
         {
-            Node<Customer> customer = _customers.Find(c => c.Id == updatedCustomer.Id);
+            Node<Customer> customer = Customers.Find(c => c.Id == updatedCustomer.Id);
             if (customer != null)
             {
                 customer.Data = updatedCustomer; // Cập nhật thông tin khách hàng
 
-                DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
+                DataManager.SaveCustomers(_filePath, Customers); // Lưu danh sách khách hàng vào tệp
             }
             else
             {
@@ -93,11 +90,11 @@ namespace CafeManagement.Services
         /// <param name="customerId">Mã số của khách hàng cần xóa.</param>
         public void Delete(int customerId)
         {
-            Node<Customer> customer = _customers.Find(c => c.Id == customerId);
+            Node<Customer> customer = Customers.Find(c => c.Id == customerId);
             if (customer != null)
             {
-                _customers.RemoveNode(customer); // Xóa khách hàng
-                DataManager.SaveCustomers(_filePath, _customers); // Lưu danh sách khách hàng vào tệp
+                Customers.RemoveNode(customer); // Xóa khách hàng
+                DataManager.SaveCustomers(_filePath, Customers); // Lưu danh sách khách hàng vào tệp
             }
             else
             {
@@ -112,7 +109,7 @@ namespace CafeManagement.Services
         /// <returns>Khách hàng thỏa mãn mã số hoặc null nếu không tìm thấy.</returns>
         public Customer GetById(int id)
         {
-            return _customers.Find(c => c.Id == id)?.Data; // Trả về khách hàng theo ID
+            return Customers.Find(c => c.Id == id)?.Data; // Trả về khách hàng theo ID
         }
 
         /// <summary>
@@ -122,7 +119,7 @@ namespace CafeManagement.Services
         /// <returns>Khách hàng thỏa mãn số điện thoại hoặc null nếu không tìm thấy.</returns>
         public Customer GetByPhoneNumber(string phoneNumber)
         {
-            return _customers.Find(c => c.PhoneNumber == phoneNumber.Trim())?.Data; // Trả về khách hàng theo số điện thoại
+            return Customers.Find(c => c.PhoneNumber == phoneNumber.Trim())?.Data; // Trả về khách hàng theo số điện thoại
         }
     }
 }

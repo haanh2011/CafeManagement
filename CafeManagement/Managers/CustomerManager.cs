@@ -14,6 +14,8 @@ namespace CafeManagement.Manager
     {
         private CustomerService _customerService; // Dịch vụ quản lý khách hàng
         private OrderService _orderService; // Dịch vụ quản lý đơn hàng
+        private LinkedList<Order> _orders; // Danh sách lý đơn hàng
+        private LinkedList<Customer> _customers; // Danh sách khách hàng
 
         /// <summary>
         /// Khởi tạo một thể hiện mới của lớp CustomerManager.
@@ -29,6 +31,10 @@ namespace CafeManagement.Manager
         /// </summary>
         public void ShowMenu()
         {
+            _orderService.GetAllItems();
+            _customerService.GetAllItems();
+            _orders = _orderService.Orders; // Danh sách lý đơn hàng
+            _customers = _customerService.Customers; // Danh sách khách hàng
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.CUSTOMER); // Hiển thị tiêu đề menu
@@ -66,12 +72,11 @@ namespace CafeManagement.Manager
         /// </summary>
         private void DisplayAllItems()
         {
-            LinkedList<Customer> customers = _customerService.GetAllItems(); // Lấy danh sách tất cả khách hàng
-            if (customers.Count > 0)
+            if (_customers.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CUSTOMER)); // Hiển thị tiêu đề danh sách
                 ConsoleHelper.PrintHeaderTable(StringConstants.CUSTOMER);
-                foreach (Customer customer in customers.ToList())
+                foreach (Customer customer in _customers.ToList())
                 {
                     Console.WriteLine(customer.ToString()); // Hiển thị thông tin của từng khách hàng
                 }
@@ -95,7 +100,7 @@ namespace CafeManagement.Manager
             string phoneNumber = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.PHONENUMBER)}: "); // Nhập số điện thoại
             string email = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.EMAIL)}: "); // Nhập địa chỉ email
 
-            _customerService.Add(new Customer(name, birthday, phoneNumber, email)); // Thêm khách hàng mới
+            _customerService.Add(new Customer(name, birthday, email, phoneNumber)); // Thêm khách hàng mới
             Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CUSTOMER)); // Thông báo thành công
         }
 
@@ -191,9 +196,9 @@ namespace CafeManagement.Manager
         /// <returns>Trả về true nếu không có đơn hàng nào liên kết với khách hàng, ngược lại trả về false.</returns>
         public bool CanDeleteCustomer(int Id)
         {
-            LinkedList<Order> orders = _orderService.GetAllItems(); // Lấy danh sách tất cả các đơn hàng
-            Node<Order> order = orders.Find(p => p.CustomerId == Id); // Tìm đơn hàng có mã số khách hàng trùng khớp với Id
-            if (orders != null)
+            _orders = _orderService.Orders; // Lấy danh sách tất cả các đơn hàng
+            Node<Order> order = _orders.Find(p => p.CustomerId == Id); // Tìm đơn hàng có mã số khách hàng trùng khớp với Id
+            if (_orders != null)
             {
                 return false; // Trả về false nếu có đơn hàng liên kết với khách hàng
             }

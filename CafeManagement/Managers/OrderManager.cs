@@ -12,6 +12,7 @@ namespace CafeManagement.Manager
         public OrderService orderService;
         public ProductService productService;
         public CustomerService customerService;
+        private static LinkedList<Order> _orders;
 
         public OrderManager()
         {
@@ -22,6 +23,10 @@ namespace CafeManagement.Manager
 
         public void ShowMenu()
         {
+            orderService.GetAllItems();
+            productService.GetAllItems();
+            customerService.GetAllItems();
+            _orders = orderService.Orders;
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.ORDER);
@@ -56,11 +61,10 @@ namespace CafeManagement.Manager
 
         public void DisplayAllItems()
         {
-            LinkedList<Order> orders = orderService.GetAllItems();
-            if (orders.Count > 0)
+            if (_orders.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.ORDER));
-                foreach (Order order in orders.ToList())
+                foreach (Order order in _orders.ToList())
                 {
                     DisplayOrder(order);
                 }
@@ -70,7 +74,6 @@ namespace CafeManagement.Manager
                 string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.ORDER);
             }
         }
-
         public void DisplayOrder(Order order)
         {
             Console.WriteLine();
@@ -141,7 +144,6 @@ namespace CafeManagement.Manager
 
             DateTime orderDate = DateTime.Now;
             LinkedList<OrderItem> items = new LinkedList<OrderItem>();
-            productService.GetAllItems();
             while (true)
             {
                 int input = ConsoleHelper.GetIntInput("Nhập mã sản phẩm (hoặc '0' để kết thúc): ");
@@ -158,7 +160,6 @@ namespace CafeManagement.Manager
 
             Order order = new Order(0, customer.Id, orderDate, items);
             orderService.Add(order);
-            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems());
             if (customer.Points > 0)
             {
                 string keySubtractionPoints = ConsoleHelper.GetStringInput("Bạn có muốn sử dụng điểm tích luỹ để giảm giá tiền cho đơn hàng này không? (Y/N) ");
@@ -170,7 +171,7 @@ namespace CafeManagement.Manager
                     int points = ConsoleHelper.GetIntInput($"\tNhập số điểm bạn muốn cấn trừ (tối đa {customer.Points} điểm): ");
                     customer.SubtractionPoints(points);
                     customerService.Update(customer);
-                    order.Points = customer.Points > points? points: customer.Points;
+                    order.Points = customer.Points > points ? points : customer.Points;
                     orderService.Update(order);
                 }
             }
@@ -193,7 +194,7 @@ namespace CafeManagement.Manager
                     Console.WriteLine("1. " + string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
                     Console.WriteLine("2. Ngày đặt hàng");
                     Console.WriteLine("3. " + StringConstants.CUSTOMER);
-                    Console.WriteLine("0. "+StringConstants.BACK);
+                    Console.WriteLine("0. " + StringConstants.BACK);
 
                     int choice;
                     if (!int.TryParse(Console.ReadLine(), out choice))
@@ -212,7 +213,6 @@ namespace CafeManagement.Manager
                             // Cập nhật ngày đặt hàng
                             order.OrderDate = DateTime.Now;
                             orderService.Update(order);
-                            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
                             break;
                         case 3:
                             // Cập nhật thông tin khách hàng
@@ -302,9 +302,7 @@ namespace CafeManagement.Manager
                         Console.WriteLine(StringConstants.MESSAGE_INVALID_OPTION);
                         continue;
                 }
-
                 Console.WriteLine("Sản phẩm đã được cập nhật.");
-                DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
             }
         }
         /// <summary>
@@ -336,7 +334,6 @@ namespace CafeManagement.Manager
                     // Tạo mới khách hàng
                     customer = new Customer(name, birthday, phoneNumber, email);
                     customerService.Add(customer);
-                    DataManager.SaveCustomers("Data/CustomerData.txt", customerService.GetAllItems()); // Lưu thay đổi vào file
                     Console.WriteLine("Khách hàng mới đã được tạo thành công.");
                 }
                 else
@@ -348,7 +345,6 @@ namespace CafeManagement.Manager
             // Cập nhật thông tin khách hàng cho đơn hàng
             order.CustomerId = customer.Id;
             orderService.Update(order);
-            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems()); // Lưu thay đổi vào file
             Console.WriteLine("Thông tin đơn hàng đã được cập nhật.");
         }
 
@@ -369,8 +365,6 @@ namespace CafeManagement.Manager
             }
             // Xóa đơn hàng từ dịch vụ đơn hàng
             orderService.Delete(orderId);
-            // Lưu thay đổi vào file
-            DataManager.SaveOrders("Data/OrderData.txt", orderService.GetAllItems());
         }
 
 
@@ -382,11 +376,10 @@ namespace CafeManagement.Manager
         public bool CanDeleteOrder(int customerId)
         {
             // Lấy tất cả các đơn hàng từ dịch vụ đơn hàng
-            LinkedList<Order> orders = orderService.GetAllItems();
             // Kiểm tra xem có bất kỳ đơn hàng nào liên kết với ID khách hàng cung cấp không
-            Node<Order> order = orders.Find(p => p.CustomerId == customerId);
+            Node<Order> order = _orders.Find(p => p.CustomerId == customerId);
             // Trả về true nếu không tìm thấy bất kỳ đơn hàng nào liên kết với ID khách hàng, cho biết có thể xóa
-            if (orders != null)
+            if (_orders != null)
             {
                 return false;
             }

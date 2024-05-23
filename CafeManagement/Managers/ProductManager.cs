@@ -5,8 +5,6 @@ using CafeManagement.Utilities;
 using CafeManagement.Models;
 using CafeManagement.Services;
 using System.Linq;
-using System.Diagnostics;
-using System.Xml.Linq;
 
 namespace CafeManagement.Manager
 {
@@ -15,6 +13,10 @@ namespace CafeManagement.Manager
         private static ProductService _productService;
         private static CategoryService _categoryService;
         private static OrderService _orderService;
+        private static Utilities.LinkedList<Product> _products;
+        private static Utilities.LinkedList<Category> _categories;
+        private static Utilities.LinkedList<Order> _orders;
+
 
         /// <summary>
         /// Khởi tạo một đối tượng mới của lớp ProductManager.
@@ -31,6 +33,12 @@ namespace CafeManagement.Manager
         /// </summary>
         public void ShowMenu()
         {
+            _productService.GetAllItems();
+            _categoryService.GetAllItems();
+            _orderService.GetAllItems();
+            _products = _productService.Products;
+            _categories = _categoryService.Categories;
+            _orders = _orderService.Orders;
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.PRODUCT);
@@ -72,15 +80,11 @@ namespace CafeManagement.Manager
         /// </summary>
         public void DisplayAllItems()
         {
-            Utilities.LinkedList<Product> products = _productService.GetAllItems();
-            Utilities.LinkedList<Category> categories = _categoryService.GetAllItems();
-
-
             ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
             ConsoleHelper.PrintHeaderTable(StringConstants.PRODUCT);
 
             // Sort the products by category and name
-            var sortedProducts = products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
+            var sortedProducts = _products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
 
             int currentCategoryId = -1;
             foreach (var product in sortedProducts)
@@ -107,13 +111,12 @@ namespace CafeManagement.Manager
         {
             ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.INPUT_X_NEW, StringConstants.PRODUCT));
             Console.WriteLine(string.Format(StringConstants.LIST_X, StringConstants.CATEGORY));
-            Utilities.LinkedList<Category> categories = _categoryService.GetAllItems();
-            foreach (Category category in categories.ToList())
+            foreach (Category category in _categories.ToList())
             {
                 Console.WriteLine($"{category.Id}. {category.Name}");
             }
             Console.WriteLine($"0. {string.Format(StringConstants.ADD_X_NEW, StringConstants.CATEGORY)}");
-            int categoryId = ConsoleHelper.GetIntInput("Chọn loại sản phẩm: ");
+            int categoryId = ConsoleHelper.GetIntInput("Nhập mã loại sản phẩm có trên danh sách (Nhập 0 để tạo mới loại sản phẩm): ");
             Category categoryNew = null;
             if (categoryId == 0)
             {
@@ -196,9 +199,8 @@ namespace CafeManagement.Manager
         /// <returns>Trả về true nếu có thể xóa và false nếu sản phẩm có liên kết với đơn hàng.</returns>
         public bool CanDeleteProduct(int Id)
         {
-            Utilities.LinkedList<Order> orders = _orderService.GetAllItems();
-            Node<Order> order = orders.Find(p => p.Items.Contains(p.Items.Find(items => items.ProductId == Id).Data));
-            if (orders != null)
+            Node<Order> order = _orders.Find(p => p.Items.Contains(p.Items.Find(items => items.ProductId == Id).Data));
+            if (_orders != null)
             {
                 return false;
             }
@@ -207,10 +209,8 @@ namespace CafeManagement.Manager
 
         public void DisplayMenu()
         {
-            Utilities.LinkedList<Product> products = _productService.GetAllItems();
-            Utilities.LinkedList<Category> categories = _categoryService.GetAllItems();
             // Sort the products by category
-            var sortedProducts = products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
+            var sortedProducts = _products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
             int categoryId = 0;
             foreach (var product in sortedProducts)
             {

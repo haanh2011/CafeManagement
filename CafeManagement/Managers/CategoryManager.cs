@@ -3,9 +3,6 @@ using CafeManagement.Utilities;
 using CafeManagement.Models;
 using CafeManagement.Services;
 using System;
-using System.Diagnostics.Eventing.Reader;
-using System.Globalization;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace CafeManagement.Manager
 {
@@ -13,6 +10,8 @@ namespace CafeManagement.Manager
     {
         private CategoryService _categoryService; // Dịch vụ quản lý danh mục sản phẩm
         private ProductService _productService; // Dịch vụ quản lý sản phẩm
+        private LinkedList<Category> _categories; // Lấy danh sách tất cả các loại sản phẩm
+        private LinkedList<Product> _products; // Lấy danh sách tất cả các sản phẩm
 
         /// <summary>
         /// Khởi tạo một thể hiện mới của lớp CategoryManager.
@@ -28,6 +27,10 @@ namespace CafeManagement.Manager
         /// </summary>
         public void ShowMenu()
         {
+            _categoryService.GetAllItems();
+            _productService.GetAllItems();
+            _categories = _categoryService.Categories; // Lấy danh sách tất cả các danh mục sản phẩm
+            _products = _productService.Products; // Lấy danh sách sản phẩm
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.CATEGORY); // In ra menu quản lý danh mục sản phẩm
@@ -65,12 +68,11 @@ namespace CafeManagement.Manager
         /// </summary>
         private void DisplayAllItems()
         {
-            LinkedList<Category> categories = _categoryService.GetAllItems(); // Lấy danh sách tất cả các danh mục sản phẩm
-            if (categories.Count > 0)
+            if (_categories.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CATEGORY)); // In tiêu đề danh sách danh mục sản phẩm
                 ConsoleHelper.PrintHeaderTable(StringConstants.CATEGORY);
-                foreach (Category category in categories.ToList())
+                foreach (Category category in _categories.ToList())
                 {
                     Console.WriteLine(category.ToString()); // In thông tin của từng danh mục sản phẩm
                 }
@@ -88,19 +90,19 @@ namespace CafeManagement.Manager
         public void Add()
         {
             // Yêu cầu nhập tên danh mục mới
-            Console.WriteLine(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY)); 
+            Console.WriteLine(string.Format(StringConstants.INPUT_NAME_OF_X_NEW, StringConstants.CATEGORY));
             // Nhận tên danh mục từ người dùng
-            string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: "); 
+            string name = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.NAME)}: ");
             // Tìm kiếm danh mục theo tên
-            Category category = _categoryService.Find(item => item.Name.ToUpper() == name.ToUpper()); 
+            Category category = _categoryService.Find(item => item.Name.ToUpper() == name.ToUpper());
             if (category != null)
             {
                 // Thông báo nếu danh mục đã tồn tại
-                Console.WriteLine(string.Format(StringConstants.X_IS_EXIST_IN_LIST, StringConstants.CATEGORY)); 
+                Console.WriteLine(string.Format(StringConstants.X_IS_EXIST_IN_LIST, StringConstants.CATEGORY));
                 return;
             }
             // Thêm danh mục mới vào danh sách
-            _categoryService.Add(new Category(name)); 
+            _categoryService.Add(new Category(name));
             Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CATEGORY)); // Hiển thị thông báo thành công
         }
         /// <summary>
@@ -158,8 +160,7 @@ namespace CafeManagement.Manager
         /// <returns>Trả về true nếu danh mục có thể được xóa, ngược lại trả về false.</returns>
         public bool CanDeleteCategory(int categoryId)
         {
-            LinkedList<Product> products = _productService.GetAllItems(); // Lấy danh sách sản phẩm
-            Node<Product> product = products.Find(p => p.CategoryId == categoryId); // Tìm sản phẩm thuộc danh mục cần kiểm tra
+            Node<Product> product = _products.Find(p => p.CategoryId == categoryId); // Tìm sản phẩm thuộc danh mục cần kiểm tra
             if (product != null)
             {
                 return false; // Nếu có sản phẩm thuộc danh mục này, không thể xóa
