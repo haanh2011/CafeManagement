@@ -59,14 +59,14 @@ namespace CafeManagement.Manager
             if (orders.Count > 0)
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.ORDER));
+                foreach (Order order in orders.ToList())
+                {
+                    DisplayOrder(order);
+                }
             }
             else
             {
                 string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.ORDER);
-            }
-            foreach (Order order in orders.ToList())
-            {
-                DisplayOrder(order);
             }
         }
 
@@ -184,7 +184,7 @@ namespace CafeManagement.Manager
             if (order != null)
             {
                 Console.WriteLine($"Thông tin đơn hàng có mã {orderId}:");
-                Console.WriteLine(order);
+                DisplayOrderById(orderId);
 
                 while (true)
                 {
@@ -192,7 +192,7 @@ namespace CafeManagement.Manager
                     Console.WriteLine("1. " + string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
                     Console.WriteLine("2. Ngày đặt hàng");
                     Console.WriteLine("3. " + StringConstants.CUSTOMER);
-                    Console.WriteLine(StringConstants.BACK);
+                    Console.WriteLine("0. "+StringConstants.BACK);
 
                     int choice;
                     if (!int.TryParse(Console.ReadLine(), out choice))

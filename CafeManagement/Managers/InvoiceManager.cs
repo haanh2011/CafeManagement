@@ -62,14 +62,14 @@ public class InvoiceManager
         if (invoices.Count > 0)
         {
             ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.INVOICE));
+            foreach (Invoice invoice in invoices.ToList())
+            {
+                Console.WriteLine(invoice.ToString());
+            }
         }
         else
         {
             Console.WriteLine(string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.INVOICE));
-        }
-        foreach (Invoice invoice in invoices.ToList())
-        {
-            Console.WriteLine(invoice.ToString());
         }
     }
 

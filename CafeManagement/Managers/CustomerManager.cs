@@ -71,18 +71,15 @@ namespace CafeManagement.Manager
             {
                 ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.CUSTOMER)); // Hiển thị tiêu đề danh sách
                 ConsoleHelper.PrintHeaderTable(StringConstants.CUSTOMER);
+                foreach (Customer customer in customers.ToList())
+                {
+                    Console.WriteLine(customer.ToString()); // Hiển thị thông tin của từng khách hàng
+                }
+                ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.CUSTOMER);
             }
             else
             {
                 Console.WriteLine(string.Format(StringConstants.THERE_ARE_NO_X_IN_THE_LIST, StringConstants.CUSTOMER)); // Thông báo nếu không có khách hàng nào
-            }
-            foreach (Customer customer in customers.ToList())
-            {
-                Console.WriteLine(customer.ToString()); // Hiển thị thông tin của từng khách hàng
-            }
-            if (customers.Count > 0)
-            {
-                ConsoleHelper.PrintHorizontalLineOfTable(StringConstants.CUSTOMER);
             }
         }
 
