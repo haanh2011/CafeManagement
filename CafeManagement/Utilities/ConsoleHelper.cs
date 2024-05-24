@@ -15,13 +15,13 @@ namespace CafeManagement.Utilities
             while (true)
             {
                 Console.Write(prompt);
-                if (int.TryParse(Console.ReadLine(), out input))
+                if (int.TryParse(Console.ReadLine(), out input) && input >= 0)
                 {
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("Vui lòng nhập một số nguyên.");
+                    Console.WriteLine("Vui lòng nhập một số nguyên lớn hơn bằng 0.");
                 }
             }
             return input;
@@ -33,13 +33,13 @@ namespace CafeManagement.Utilities
             while (true)
             {
                 Console.Write(prompt);
-                if (double.TryParse(Console.ReadLine(), out input))
+                if (double.TryParse(Console.ReadLine(), out input) && input >= 0)
                 {
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("Vui lòng nhập một số thực.");
+                    Console.WriteLine("Vui lòng nhập một số thực lớn hơn bằng 0.");
                 }
             }
             return input;
