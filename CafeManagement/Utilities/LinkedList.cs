@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CafeManagement.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -681,6 +682,11 @@ namespace CafeManagement.Utilities
 
             // Trả về phần tử có giá trị lớn nhất đã tìm được
             return max;
+        }
+
+        public static implicit operator LinkedList<T>(InvoiceService v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

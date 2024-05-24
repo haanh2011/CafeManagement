@@ -12,8 +12,10 @@ namespace CafeManagement.Manager
         public OrderService orderService;
         public ProductService productService;
         public CustomerService customerService;
+        private InvoiceService _invoiceService;
         private CategoryService _categoryService;
         private static LinkedList<Order> _orders;
+        private static LinkedList<Invoice> _invoices;
         private static LinkedList<Product> _products;
 
         public OrderManager()
@@ -21,15 +23,15 @@ namespace CafeManagement.Manager
             orderService = new OrderService("Data/OrderData.txt");
             productService = new ProductService("Data/ProductData.txt");
             customerService = new CustomerService("Data/CustomerData.txt");
+            _invoiceService = new InvoiceService("Data/InvoiceData.txt");
             _categoryService = new CategoryService("Data/CategoryData.txt");
         }
 
         public void ShowMenu()
         {
-            orderService.GetAllItems();
-            productService.GetAllItems();
-            customerService.GetAllItems();
             _orders = orderService.Orders;
+            _products = productService.Products;
+            _invoices = _invoiceService.Invoices;
             while (true)
             {
                 ConsoleHelper.PrintMenuDetails(StringConstants.ORDER);
@@ -106,7 +108,8 @@ namespace CafeManagement.Manager
         {
             ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
             ConsoleHelper.PrintHeaderTable(StringConstants.PRODUCT);
-
+            productService.GetAllItems();
+            _products = productService.Products;
             // Sort the products by category and name
             var sortedProducts = _products.ToList().OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToList();
 
@@ -398,13 +401,13 @@ namespace CafeManagement.Manager
         /// </summary>
         /// <param name="customerId">ID của khách hàng.</param>
         /// <returns>Trả về true nếu không có đơn hàng nào liên kết với khách hàng cung cấp, ngược lại trả về false.</returns>
-        public bool CanDeleteOrder(int customerId)
+        public bool CanDeleteOrder(int orderId)
         {
             // Lấy tất cả các đơn hàng từ dịch vụ đơn hàng
             // Kiểm tra xem có bất kỳ đơn hàng nào liên kết với ID khách hàng cung cấp không
-            Node<Order> order = _orders.Find(p => p.CustomerId == customerId);
+            Node<Invoice> invoice = _invoices.Find(p => p.OrderId == orderId);
             // Trả về true nếu không tìm thấy bất kỳ đơn hàng nào liên kết với ID khách hàng, cho biết có thể xóa
-            if (_orders != null)
+            if (invoice != null)
             {
                 return false;
             }

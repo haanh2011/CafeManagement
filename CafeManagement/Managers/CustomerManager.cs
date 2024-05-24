@@ -196,7 +196,7 @@ namespace CafeManagement.Manager
         {
             _orders = _orderService.Orders; // Lấy danh sách tất cả các đơn hàng
             Node<Order> order = _orders.Find(p => p.CustomerId == Id); // Tìm đơn hàng có mã số khách hàng trùng khớp với Id
-            if (_orders != null)
+            if (order != null)
             {
                 return false; // Trả về false nếu có đơn hàng liên kết với khách hàng
             }
