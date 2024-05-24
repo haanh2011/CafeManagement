@@ -58,11 +58,11 @@ namespace CafeManagement.Utilities
                     input = Console.ReadLine();
 
                     // Chuyển đổi chuỗi đầu vào thành đối tượng DateTime
-                    date = DateTime.ParseExact(input, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    date = DateTime.ParseExact(input, StringConstants.FORMAT_DATE, CultureInfo.InvariantCulture);
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Định dạng ngày không hợp lệ. Vui lòng nhập ngày theo định dạng dd/MM/yyyy.");
+                    Console.WriteLine($"Định dạng ngày không hợp lệ. Vui lòng nhập ngày theo định dạng {StringConstants.FORMAT_DATE}.");
                 }
             }
             return date;
@@ -84,6 +84,25 @@ namespace CafeManagement.Utilities
                 }
             }
             return input.TrimStart().TrimEnd();
+        }
+        public static string GetYNInput(string prompt)
+        {
+            string input;
+            Console.Write(prompt);
+            while (true)
+            {
+                string userInput = Console.ReadLine().Trim().ToUpper();
+                if (userInput == "Y" || userInput == "N")
+                {
+                    input = userInput;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Vui lòng nhập 'Y' hoặc 'N'.");
+                }
+            }
+            return input;
         }
 
         public static void PrintTitleMenu(string title, Boolean isClearConsole = true)

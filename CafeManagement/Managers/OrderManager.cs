@@ -106,7 +106,7 @@ namespace CafeManagement.Manager
 
         public void DisplayAllProducts()
         {
-            ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT));
+            ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT), false);
             ConsoleHelper.PrintHeaderTable(StringConstants.PRODUCT);
             productService.GetAllItems();
             _products = productService.Products;
@@ -153,7 +153,7 @@ namespace CafeManagement.Manager
             {
                 Console.WriteLine("Không tìm thấy thông tin khách hàng với số điện thoại này.");
 
-                string createNewCustomer = ConsoleHelper.GetStringInput("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
+                string createNewCustomer = ConsoleHelper.GetYNInput("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
                 if (createNewCustomer.ToUpper() == "Y")
                 {
                     // Nhập thông tin mới của khách hàng
@@ -193,7 +193,7 @@ namespace CafeManagement.Manager
             orderService.Add(order);
             if (customer.Points > 0)
             {
-                string keySubtractionPoints = ConsoleHelper.GetStringInput("Bạn có muốn sử dụng điểm tích luỹ để giảm giá tiền cho đơn hàng này không? (Y/N) ");
+                string keySubtractionPoints = ConsoleHelper.GetYNInput("Bạn có muốn sử dụng điểm tích luỹ để giảm giá tiền cho đơn hàng này không? (Y/N) ");
                 if (keySubtractionPoints.ToUpper() == "Y")
                 {
                     // Nhập thông tin mới của khách hàng
@@ -350,7 +350,7 @@ namespace CafeManagement.Manager
             if (customer == null)
             {
                 Console.WriteLine("Không tìm thấy thông tin khách hàng với số điện thoại này.");
-                string createNewCustomer = ConsoleHelper.GetStringInput("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
+                string createNewCustomer = ConsoleHelper.GetYNInput("Bạn có muốn tạo mới thông tin khách hàng không? (Y/N)");
                 if (createNewCustomer.ToUpper() == "Y")
                 {
                     // Nhập thông tin mới của khách hàng

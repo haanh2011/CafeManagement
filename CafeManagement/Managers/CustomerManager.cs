@@ -100,7 +100,7 @@ namespace CafeManagement.Manager
             string phoneNumber = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.PHONENUMBER)}: "); // Nhập số điện thoại
             string email = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.EMAIL)}: "); // Nhập địa chỉ email
 
-            _customerService.Add(new Customer(name, birthday, email, phoneNumber)); // Thêm khách hàng mới
+            _customerService.Add(new Customer(name, birthday, phoneNumber, email)); // Thêm khách hàng mới
             Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CUSTOMER)); // Thông báo thành công
         }
 
@@ -117,7 +117,7 @@ namespace CafeManagement.Manager
             if (customer == null)
             {
                 Console.WriteLine(string.Format(StringConstants.X_WITH_THE_ENTERED_ID_WAS_NOT_FOUND, StringConstants.CUSTOMER)); // Thông báo nếu không tìm thấy khách hàng
-                string createNewCustomer = ConsoleHelper.GetStringInput("Không tồn tại khách hàng trong danh sách! Bạn có muốn tạo mới khách hàng không? (Y/N)"); // Hỏi người dùng có muốn tạo mới khách hàng không
+                string createNewCustomer = ConsoleHelper.GetYNInput("Không tồn tại khách hàng trong danh sách! Bạn có muốn tạo mới khách hàng không? (Y/N)"); // Hỏi người dùng có muốn tạo mới khách hàng không
                 if (createNewCustomer.ToUpper() == "Y")
                 {
                     Add(); // Thêm khách hàng mới nếu người dùng chọn 'Y'

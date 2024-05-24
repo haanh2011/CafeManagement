@@ -116,7 +116,7 @@ namespace CafeManagement.Manager
         public void PrintInvoice(Invoice invoice)
         {
             // Hỏi người dùng có muốn xuất hóa đơn không
-            string answer = ConsoleHelper.GetStringInput("Bạn có muốn in hóa đơn không? (Y/N): ");
+            string answer = ConsoleHelper.GetYNInput("Bạn có muốn in hóa đơn không? (Y/N): ");
             if (answer.ToUpper() == "Y")
             {
                 // In hóa đơn
@@ -142,7 +142,7 @@ namespace CafeManagement.Manager
         public void PrintInvoiceById(int invoiceId)
         {
             // Hỏi người dùng có muốn xuất hóa đơn không
-            string answer = ConsoleHelper.GetStringInput("Bạn có muốn in hóa đơn không? (Y/N): ");
+            string answer = ConsoleHelper.GetYNInput("Bạn có muốn in hóa đơn không? (Y/N): ");
 
             if (answer.ToUpper() == "Y")
             {
