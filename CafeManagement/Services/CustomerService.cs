@@ -36,14 +36,20 @@ namespace CafeManagement.Services
         /// Thêm điểm cho tất cả các khách hàng.
         /// </summary>
         /// <param name="points">Số điểm được thêm cho mỗi khách hàng.</param>
-        public void AddPoints(int points)
+        public void AddPoints(int updatedCustomerId, int points)
         {
-            // Thêm điểm cho từng khách hàng
-            foreach (Customer customer in Customers.ToList())
+            // Thêm điểm cho khách hàng
+           
+            Node<Customer> customer = Customers.Find(c => c.Id == updatedCustomerId);
+            if (customer != null)
             {
-                customer.AddPoints(points);
+                // Cập nhật thông tin khách hàng
+                customer.Data.AddPoints(points);
             }
-
+            else
+            {
+                Console.WriteLine("Không tìm thấy khách hàng.");
+            }
             // Lưu danh sách khách hàng với điểm mới
             DataManager.SaveCustomers(_filePath, Customers);
         }

@@ -100,7 +100,7 @@ namespace CafeManagement.Manager
             string phoneNumber = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.PHONENUMBER)}: "); // Nhập số điện thoại
             string email = ConsoleHelper.GetStringInput($"\t{FormatHelper.ToTitleCase(StringConstants.EMAIL)}: "); // Nhập địa chỉ email
 
-            _customerService.Add(new Customer(name, birthday, phoneNumber, email)); // Thêm khách hàng mới
+            _customerService.Add(new Customer(name:name, birthday:birthday, phoneNumber:phoneNumber, email)); // Thêm khách hàng mới
             Console.WriteLine(string.Format(StringConstants.X_HAS_BEEN_ADDED_SUCCESSFULLY, StringConstants.CUSTOMER)); // Thông báo thành công
         }
 
@@ -194,6 +194,7 @@ namespace CafeManagement.Manager
         /// <returns>Trả về true nếu không có đơn hàng nào liên kết với khách hàng, ngược lại trả về false.</returns>
         public bool CanDeleteCustomer(int Id)
         {
+            _orderService.GetAllItems();
             _orders = _orderService.Orders; // Lấy danh sách tất cả các đơn hàng
             Node<Order> order = _orders.Find(p => p.CustomerId == Id); // Tìm đơn hàng có mã số khách hàng trùng khớp với Id
             if (order != null)

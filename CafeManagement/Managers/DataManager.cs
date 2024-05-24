@@ -143,10 +143,9 @@ namespace CafeManagement.Manager
                         DateTime birth = DateTime.MinValue;
                         try
                         {
-
                             // Chuyển đổi chuỗi đầu vào thành đối tượng DateTime
                             birth = DateTime.ParseExact(parts[2], StringConstants.FORMAT_DATE, CultureInfo.InvariantCulture);
-                            customers.AddLast(new Customer(parts[1], birth, parts[3], parts[4], id, points));
+                            customers.AddLast(new Customer(name:parts[1], birthday:birth, phoneNumber:parts[3], email:parts[4], id, points));
                         }
                         catch (FormatException)
                         {
@@ -168,7 +167,7 @@ namespace CafeManagement.Manager
             var lines = new Utilities.LinkedList<string>();
             foreach (Customer customer in customers.ToList())
             {
-                lines.AddLast($"{customer.Id},{customer.Name},{customer.Birthday.ToString(StringConstants.FORMAT_DATE)},{customer.Email},{customer.PhoneNumber},{customer.Points}");
+                lines.AddLast($"{customer.Id},{customer.Name},{customer.Birthday.ToString(StringConstants.FORMAT_DATE)},{customer.PhoneNumber},{customer.Email},{customer.Points}");
             }
             File.WriteAllLines(filePath, lines.ToList());
         }

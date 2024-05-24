@@ -52,8 +52,8 @@ namespace CafeManagement.Models
             Id = id;
             Name = name;
             Birthday = birthday;
-            Email = email;
             PhoneNumber = phoneNumber;
+            Email = email;
             Points = points;
         }
 
@@ -84,7 +84,7 @@ namespace CafeManagement.Models
         /// <returns>Chuỗi biểu diễn của đối tượng Customer.</returns>
         public override string ToString()
         {
-            return $"| {Id,5} | {Name.ToUpper(),-25} | {Birthday.ToShortDateString(),-10} | {Email,-25} | {PhoneNumber,-10} | {Points,10} |";
+            return $"| {Id,5} | {Name.ToUpper(),-25} | {Birthday.ToShortDateString(),-10} | {PhoneNumber,-10} | {Email,-25} | {Points,10} |";
         }
     }
 }

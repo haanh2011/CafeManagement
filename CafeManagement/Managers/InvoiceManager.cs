@@ -187,7 +187,7 @@ namespace CafeManagement.Manager
             int pointsEarned = (int)(order.Total() / 10000);
 
             // Thêm số điểm tính được vào điểm tích lũy của khách hàng
-            _customerService.AddPoints(pointsEarned);
+            _customerService.AddPoints(order.CustomerId,pointsEarned);
 
             // Tạo hóa đơn
             DateTime currentDate = DateTime.Now;

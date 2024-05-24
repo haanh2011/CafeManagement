@@ -134,7 +134,7 @@ namespace CafeManagement.Utilities
                     Console.WriteLine($"| {"STT",-5} | {"ID",-5} | {"Tên sản phẩm",-25} | {"Giá",15} | {"Số lượng",10} | {"Thành tiền",-15} |");
                     break;
                 case StringConstants.CUSTOMER:
-                    Console.WriteLine($"| {"Mã",5} | {"Tên",-25} | {"Ngày sinh",-10} | {"Email",-25} | {"SĐT",-10} | {"Điểm",10} |");
+                    Console.WriteLine($"| {"Mã",5} | {"Tên",-25} | {"Ngày sinh",-10} | {"SĐT",-10} | {"Email",-25} | {"Điểm",10} |");
                     break;
                 case StringConstants.INVOICE:
                     Console.WriteLine($"| {"Mã",-5} | {"Mã đơn hàng",-15} | {"Ngày lập hoá đơn",-20} |");

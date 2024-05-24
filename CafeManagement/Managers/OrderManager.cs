@@ -108,6 +108,7 @@ namespace CafeManagement.Manager
         {
             ConsoleHelper.PrintTitleMenu(string.Format(StringConstants.LIST_X, StringConstants.PRODUCT), false);
             ConsoleHelper.PrintHeaderTable(StringConstants.PRODUCT);
+            _categoryService.GetAllItems();
             productService.GetAllItems();
             _products = productService.Products;
             // Sort the products by category and name
@@ -148,7 +149,7 @@ namespace CafeManagement.Manager
             string customerPhoneNumber = ConsoleHelper.GetStringInput("Nhập số diện thoại khách hàng: ");
             // Tìm kiếm thông tin khách hàng dựa trên số điện thoại
             Customer customer = customerService.GetByPhoneNumber(customerPhoneNumber);
-
+            Boolean isCreateCustomer = false;
             if (customer == null)
             {
                 Console.WriteLine("Không tìm thấy thông tin khách hàng với số điện thoại này.");
